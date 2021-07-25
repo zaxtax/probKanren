@@ -1,0 +1,143 @@
+\begin{thebibliography}{15}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+\providecommand{\url}[1]{\texttt{#1}}
+\providecommand{\href}[2]{#2}
+\providecommand{\path}[1]{#1}
+\providecommand{\DOIprefix}{doi:}
+\providecommand{\ArXivprefix}{arXiv:}
+\providecommand{\URLprefix}{URL: }
+\providecommand{\Pubmedprefix}{pmid:}
+\providecommand{\doi}[1]{\href{http://dx.doi.org/#1}{\path{#1}}}
+\providecommand{\Pubmed}[1]{\href{pmid:#1}{\path{#1}}}
+\providecommand{\bibinfo}[2]{#2}
+\ifx\xfnm\relax \def\xfnm[#1]{\unskip,\space#1}\fi
+%Type = Inproceedings
+\bibitem[{Sato and Kameya(1997)}]{sato1997prism}
+\bibinfo{author}{T.~Sato}, \bibinfo{author}{Y.~Kameya},
+\newblock \bibinfo{title}{Prism: a language for symbolic-statistical modeling},
+\newblock in: \bibinfo{booktitle}{IJCAI}, volume~\bibinfo{volume}{97},
+  \bibinfo{organization}{Citeseer}, \bibinfo{year}{1997}, pp.
+  \bibinfo{pages}{1330--1339}.
+%Type = Inproceedings
+\bibitem[{De~Raedt et~al.(2007)De~Raedt, Kimmig, and Toivonen}]{de2007problog}
+\bibinfo{author}{L.~De~Raedt}, \bibinfo{author}{A.~Kimmig},
+  \bibinfo{author}{H.~Toivonen},
+\newblock \bibinfo{title}{Problog: A probabilistic prolog and its application
+  in link discovery.},
+\newblock in: \bibinfo{booktitle}{IJCAI}, volume~\bibinfo{volume}{7},
+  \bibinfo{organization}{Hyderabad}, \bibinfo{year}{2007}, pp.
+  \bibinfo{pages}{2462--2467}.
+%Type = Inproceedings
+\bibitem[{Gutmann et~al.(2010)Gutmann, Jaeger, and
+  De~Raedt}]{gutmann2010extending}
+\bibinfo{author}{B.~Gutmann}, \bibinfo{author}{M.~Jaeger},
+  \bibinfo{author}{L.~De~Raedt},
+\newblock \bibinfo{title}{Extending problog with continuous distributions},
+\newblock in: \bibinfo{booktitle}{International Conference on Inductive Logic
+  Programming}, \bibinfo{organization}{Springer}, \bibinfo{year}{2010}, pp.
+  \bibinfo{pages}{76--91}.
+%Type = Article
+\bibitem[{Islam et~al.(2012)Islam, Ramakrishnan, and
+  Ramakrishnan}]{islam2012inference}
+\bibinfo{author}{M.~A. Islam}, \bibinfo{author}{C.~Ramakrishnan},
+  \bibinfo{author}{I.~Ramakrishnan},
+\newblock \bibinfo{title}{Inference in probabilistic logic programs with
+  continuous random variables},
+\newblock \bibinfo{journal}{Theory and Practice of Logic Programming}
+  \bibinfo{volume}{12} (\bibinfo{year}{2012}) \bibinfo{pages}{505--523}.
+%Type = Inproceedings
+\bibitem[{Belle et~al.(2015)Belle, Passerini, and Van~den
+  Broeck}]{belle2015probabilistic}
+\bibinfo{author}{V.~Belle}, \bibinfo{author}{A.~Passerini},
+  \bibinfo{author}{G.~Van~den Broeck},
+\newblock \bibinfo{title}{Probabilistic inference in hybrid domains by weighted
+  model integration},
+\newblock in: \bibinfo{booktitle}{Twenty-Fourth International Joint Conference
+  on Artificial Intelligence}, \bibinfo{year}{2015}.
+%Type = Article
+\bibitem[{Gutmann et~al.(2011)Gutmann, Thon, Kimmig, Bruynooghe, and
+  De~Raedt}]{gutmann2011magic}
+\bibinfo{author}{B.~Gutmann}, \bibinfo{author}{I.~Thon},
+  \bibinfo{author}{A.~Kimmig}, \bibinfo{author}{M.~Bruynooghe},
+  \bibinfo{author}{L.~De~Raedt},
+\newblock \bibinfo{title}{The magic of logical inference in probabilistic
+  programming},
+\newblock \bibinfo{journal}{Theory and Practice of Logic Programming}
+  \bibinfo{volume}{11} (\bibinfo{year}{2011}) \bibinfo{pages}{663--680}.
+%Type = Article
+\bibitem[{Byrd et~al.(2017)Byrd, Ballantyne, Rosenblatt, and
+  Might}]{byrd2017unified}
+\bibinfo{author}{W.~E. Byrd}, \bibinfo{author}{M.~Ballantyne},
+  \bibinfo{author}{G.~Rosenblatt}, \bibinfo{author}{M.~Might},
+\newblock \bibinfo{title}{A unified approach to solving seven programming
+  problems (functional pearl)},
+\newblock \bibinfo{journal}{Proceedings of the ACM on Programming Languages}
+  \bibinfo{volume}{1} (\bibinfo{year}{2017}) \bibinfo{pages}{1--26}. \URLprefix
+  \url{https://doi.org/10.1145/3110252}.
+%Type = Book
+\bibitem[{Friedman et~al.(2018)Friedman, Byrd, Kiselyov, and
+  Hemann}]{daniel2018reasoned}
+\bibinfo{author}{D.~P. Friedman}, \bibinfo{author}{W.~E. Byrd},
+  \bibinfo{author}{O.~Kiselyov}, \bibinfo{author}{J.~Hemann},
+  \bibinfo{title}{The Reasoned Schemer}, \bibinfo{edition}{2nd} ed.,
+  \bibinfo{publisher}{MIT Press}, \bibinfo{year}{2018}.
+%Type = Inproceedings
+\bibitem[{Wood et~al.(2014)Wood, Meent, and Mansinghka}]{wood2014new}
+\bibinfo{author}{F.~Wood}, \bibinfo{author}{J.~W. Meent},
+  \bibinfo{author}{V.~Mansinghka},
+\newblock \bibinfo{title}{A new approach to probabilistic programming
+  inference},
+\newblock in: \bibinfo{booktitle}{Artificial Intelligence and Statistics},
+  \bibinfo{organization}{PMLR}, \bibinfo{year}{2014}, pp.
+  \bibinfo{pages}{1024--1032}.
+%Type = Article
+\bibitem[{van~de Meent et~al.(2018)van~de Meent, Paige, Yang, and
+  Wood}]{van2018introduction}
+\bibinfo{author}{J.~van~de Meent}, \bibinfo{author}{B.~Paige},
+  \bibinfo{author}{H.~Yang}, \bibinfo{author}{F.~Wood},
+\newblock \bibinfo{title}{An introduction to probabilistic programming},
+\newblock \bibinfo{journal}{CoRR} \bibinfo{volume}{abs/1809.10756}
+  (\bibinfo{year}{2018}). \URLprefix \url{http://arxiv.org/abs/1809.10756}.
+%Type = Book
+\bibitem[{Chopin et~al.(2020)Chopin, Papaspiliopoulos
+  et~al.}]{chopin2020introduction}
+\bibinfo{author}{N.~Chopin}, \bibinfo{author}{O.~Papaspiliopoulos}, et~al.,
+  \bibinfo{title}{An Introduction to Sequential Monte Carlo},
+  volume~\bibinfo{volume}{4}, \bibinfo{publisher}{Springer},
+  \bibinfo{year}{2020}.
+%Type = Inproceedings
+\bibitem[{Douc and Capp{\'e}(2005)}]{douc2005comparison}
+\bibinfo{author}{R.~Douc}, \bibinfo{author}{O.~Capp{\'e}},
+\newblock \bibinfo{title}{Comparison of resampling schemes for particle
+  filtering},
+\newblock in: \bibinfo{booktitle}{ISPA 2005. Proceedings of the 4th
+  International Symposium on Image and Signal Processing and Analysis, 2005.},
+  \bibinfo{organization}{IEEE}, \bibinfo{year}{2005}, pp.
+  \bibinfo{pages}{64--69}.
+%Type = Inproceedings
+\bibitem[{Paige et~al.(2014)Paige, Wood, Doucet, and Teh}]{PaigeWDT14}
+\bibinfo{author}{B.~Paige}, \bibinfo{author}{F.~D. Wood},
+  \bibinfo{author}{A.~Doucet}, \bibinfo{author}{Y.~W. Teh},
+\newblock \bibinfo{title}{Asynchronous anytime sequential monte carlo},
+\newblock in: \bibinfo{booktitle}{Advances in Neural Information Processing
+  Systems}, \bibinfo{year}{2014}, pp. \bibinfo{pages}{3410--3418}. \URLprefix
+  \url{https://proceedings.neurips.cc/paper/2014/hash/7eb7eabbe9bd03c2fc99881d04da9cbd-Abstract.html}.
+%Type = Inproceedings
+\bibitem[{Swords and Friedman(2013)}]{swords2013rkanren}
+\bibinfo{author}{C.~Swords}, \bibinfo{author}{D.~Friedman},
+\newblock \bibinfo{title}{rkanren: Guided search in minikanren},
+\newblock in: \bibinfo{booktitle}{Proceedings of Scheme Workshop},
+  \bibinfo{year}{2013}.
+%Type = Article
+\bibitem[{Zhang et~al.(2018)Zhang, Rosenblatt, Fetaya, Liao, Byrd, Might,
+  Urtasun, and Zemel}]{zhang2018neural}
+\bibinfo{author}{L.~Zhang}, \bibinfo{author}{G.~Rosenblatt},
+  \bibinfo{author}{E.~Fetaya}, \bibinfo{author}{R.~Liao},
+  \bibinfo{author}{W.~E. Byrd}, \bibinfo{author}{M.~Might},
+  \bibinfo{author}{R.~Urtasun}, \bibinfo{author}{R.~Zemel},
+\newblock \bibinfo{title}{Neural guided constraint logic programming for
+  program synthesis},
+\newblock \bibinfo{journal}{arXiv preprint arXiv:1809.02840}
+  (\bibinfo{year}{2018}).
+
+\end{thebibliography}

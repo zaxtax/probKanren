@@ -1,0 +1,313 @@
+%% The first command in your LaTeX source must be the \documentclass command.
+%%
+%% Options:
+%% twocolumn : Two column layout.
+%% hf: enable header and footer.
+\documentclass[
+% twocolumn,
+% hf,
+]{ceurart}
+
+%%
+%% One can fix some overfulls
+% \sloppy
+
+%%
+%% Minted listings support 
+%% Need pygment <http://pygments.org/> <http://pypi.python.org/pypi/Pygments>
+\usepackage{minted}
+%% auto break lines
+\setminted{breaklines=true}
+
+%%
+%% end of the preamble, start of the body of the document source.
+\begin{document}
+
+%%
+%% Rights management information.
+%% CC-BY is default license.
+\copyrightyear{2021}
+\copyrightclause{Copyright for this paper by its authors.
+  Use permitted under Creative Commons License Attribution 4.0
+  International (CC BY 4.0).}
+
+%%
+%% This command is for the conference information
+\conference{Woodstock'21: Symposium on the irreproducible science,
+  June 07--11, 2021, Woodstock, NY}
+
+%%
+%% The "title" command
+\title{A better way to format your document for CEUR-WS}
+
+%%
+%% The "author" command and its associated commands are used to define
+%% the authors and their affiliations.
+\author[1]{Robert Zinkov}[%
+%orcid=0000-0002-0877-7063,
+email=zinkov@robots.ox.ac.uk,
+url=https://zinkov.com/,
+]
+\address[1]{Peoples' Friendship University of Russia (RUDN University),
+  6 Miklukho-Maklaya St, Moscow, 117198, Russian Federation}
+
+\author[2]{William E. Byrd}[%
+%orcid=0000-0001-7116-9338,
+email=webyrd@uab.edu,
+url=http://webyrd.net/,
+]
+\address[2]{Vrije Universiteit Amsterdam, De Boelelaan 1105, 1081 HV Amsterdam, The Netherlands}
+
+%%
+%% The abstract is a short summary of the work to be presented in the
+%% article.
+\begin{abstract}
+  Probabilistic programming is sometimes described as a generalisation
+  of logic programming where instead of just returning a set of facts
+  that answer a given query, we return a probability distribution over
+  facts that answer a given query. But many contemporary probabilistic
+  logic programming languages are not implemented as simple extensions
+  of existing logic programming languages but instead involve their
+  own unique implementations. Here we introduce probKanren, a simple
+  extension to miniKanren that transforms
+\end{abstract}
+
+%%
+%% Keywords. The author(s) should pick words that accurately describe
+%% the work being presented. Separate the keywords with commas.
+\begin{keywords}
+  Probabilistic Logic Programming \sep
+  miniKanren \sep
+  Probabilistic Programming \sep
+  Sequential Monte Carlo
+  %Particle Filtering
+  %relational programming
+  %logic programming
+\end{keywords}
+
+%%
+%% This command processes the author and affiliation and title
+%% information and builds the first part of the formatted document.
+\maketitle
+
+\section{Introduction}
+
+Conceptually, logic programming provides a way to model
+non-determinism. This is accomplished by maintaining a set of answers
+that satisfy a set of logical constraints. A natural generalisation
+to this domain is adding a notion of uncertainty to this set of answers
+by associating with them a probability distribution.
+
+\subsection{Illustrated Example}
+
+To help explain how to use probKanren we introduce the following example:
+
+\begin{minted}{Scheme}
+  (run 1000 (q)
+    (normal 0 3 q)
+    (greatero q 0))
+\end{minted}
+
+This probKanren program draws 1000 samples from a normal distribution truncated
+below 0.
+
+\subsection{Contributions}
+
+\section{Related Work}
+
+There is a rich history of extending logic programming formalisms to
+support probabilistic inference. Early systems like
+PRISM\cite{sato1997prism} and ProbLog\cite{de2007problog} allowed
+associating discrete distributions with facts. Later
+work\cite{gutmann2010extending} introduces distribution clauses so
+that some continuous distributions. Other work extended these methods
+further while focusing on efficient exact inference algorithms like
+model weight integration\cite{islam2012inference,
+  belle2015probabilistic}. Our work is most similar to
+\cite{gutmann2011magic} except that while they combine their forward
+reasoning with an importance sampler we use a particle cascade instead
+which can be more sample efficient.
+
+\section{Background}
+
+\subsection{miniKanren}
+
+\textsc{miniKanren}\cite{byrd2017unified, daniel2018reasoned} is a
+pure logic programming language embedded in Scheme. The language
+consists of a set of terms, functions for constructing, a set of goal
+primitives, and two run functions to answer queries in the
+language. The goal primitives consist of a \texttt{fresh} form for
+introducing logic variables, a unification primitive, a conjunction
+combinator, and a disjunction combinator. 
+
+\subsection{Probabilistic Programming}
+
+Probabilistic Programming Languages\cite{wood2014new,
+  van2018introduction} are a family of domain specific languages for
+posing and efficiently solving probabilistic modelling problems. At
+their core, all have a way to \texttt{sample} from a probability
+distribution and \texttt{observe} data generated from a probability
+distribution.
+
+There are many ways to implement inference algorithms for probabilistic
+programming languages but methods based on likelihood-weighting and
+sequential monte carlo algorithms are the easiest.
+
+\subsection{Sequential Monte Carlo}
+
+Sequential Monte Carlo\cite{chopin2020introduction} are an efficient
+online way to sample from probabilistic models especially suited for
+state-space domains. If we imagine our probabilistic programs as
+straight-line programs with no control-flow we can imagine numbering
+every sample function $x_1, f_2, \ldots, f_n$ and every observe
+function $g_1, g_2, \ldots, g_n$ then our probability density over our
+random variables $x$ and observed data $y$ can be defined as:
+
+\begin{equation}
+  p(x, y) = \prod_i f(x_i \mid x_{0:n-1})g(y_i \mid x_{0:n})
+\end{equation}
+
+\subsection{Sequential Importance Sampling}
+
+If we imagine running this program each execution trace can be seen as
+a sample from the distribution. If we then weight by their likelihood
+as we run them that collection execution traces will be an empirical
+distribution of the given program. We call each of these execution traces
+particles and the below method is how we obtain them along with their weights $w$.
+
+\begin{equation}
+  x_n \sim f(x_n \mid x_{0:n-1}) \\
+  w_n^{(k)} = \frac{g(x_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
+  W_n^{(k)} = W_{n-1}^{(k)} w_n^{(k)}
+\end{equation}
+
+The weights are then normalised at the end to make a proper probability distribution.
+
+\subsection{Sequential Importance Resampling}
+
+The problem with the above algorithm is over time for many particles
+$W_k$ is going to become low and that particle will stop being very
+informative of the underlying distribution. To mitigate this issue,
+each time we encounter an observation we resample our particles. Resampling
+effectively removes particles with low weight and duplicates particles
+with higher weight by sampling with replacement our existing particles.
+
+The above is called multinomial resampling but there are other methods
+as well. A survey\cite{douc2005comparison} of resampling methods
+suggests all of them are helpful to reduce particle degeneracy.
+
+\subsection{Particle Cascade}
+
+As the SMC resampling step was defined in the previous section
+Particle Cascades \cite{PaigeWDT14} remove this barrier allowing
+every particle to be resampled asynchronously with the associated
+weights being relative to a global running average. % double-check this
+
+\section{Proposed Method}
+
+We propose to extend \textsc{miniKanren} by augmenting each of the
+search streams with a set of particles. These particles represent the
+empirical distribution of that stream. Each particle has associated
+with it a substitution of all the logic and random variables as well
+as a weight that is proportional to the likelihood of the substitution.
+
+An initial set of particles is created from the probabilistic program
+when it is first run. As disjunctions like \texttt{conde} are encountered,
+we split evenly the number of particles allocated to each stream. Whenever
+we encounter a unification primitive, we run a resampling step. This
+helps to prune low-weight particles and replicate high weight ones.
+
+As an optimisation we may create more particles during resampling
+based on a globally stored a counter of the effective sample size of
+all particles across all streams.
+
+We follow \cite{gutmann2010extending} and place the following restrictions
+on our distribution clauses and the random variables they specify.
+
+Firstly, the arguments of distribution clauses must be
+ground. Secondly, a random variable can not unify with any arithmetic
+expression
+
+
+\section{Experiments}
+
+One of the experiments should be something from the probabilistic logic literature.
+
+Friends who Smoke is a probabilistic logic program which models the social nature of
+who smokes cigarettes. The model predicts that people who are friends with people
+who smoke are more likely to smoke.
+
+We could include experiment from Noah Goodman's dippl work like a semantic parsing
+example\\ \url{http://dippl.org/examples/semanticparsing.html}
+
+We could include program synthesis experiment, where probabilities
+allow us to specify a soft preference for using certain language
+primitives in a similar spirit to
+\textsc{rKanren}\cite{swords2013rkanren} or neural-guided search
+\cite{zhang2018neural}.
+
+\section{Conclusions}
+
+We made a cool and simple to implement extension to
+\textsc{miniKanren} that let's us support probabilistic inference on
+both discrete and continuous distributions.
+
+%% \begin{table*}
+%%   \caption{Frequency of Special Characters}
+%%   \label{tab:freq}
+%%   \begin{tabular}{ccl}
+%%     \toprule
+%%     Non-English or Math&Frequency&Comments\\
+%%     \midrule
+%%     \O & 1 in 1,000& For Swedish names\\
+%%     $\pi$ & 1 in 5& Common in math\\
+%%     \$ & 4 in 5 & Used in business\\
+%%     $\Psi^2_1$ & 1 in 40,000& Unexplained usage\\
+%%   \bottomrule
+%% \end{tabular}
+%% \end{table*}
+
+%% To set a wider table, which takes up the whole width of the page's
+%% live area, use the environment \verb|table*| to enclose the table's
+%% contents and the table caption.  As with a single-column table, this
+%% wide table will ``float'' to a location deemed more
+%% desirable. Immediately following this sentence is the point at which
+%% Table~\ref{tab:commands} is included in the input file; again, it is
+%% instructive to compare the placement of the table here with the table
+%% in the printed output of this document.
+
+%% \begin{table}
+%%   \caption{Some Typical Commands}
+%%   \label{tab:commands}
+%%   \begin{tabular}{ccl}
+%%     \toprule
+%%     Command &A Number & Comments\\
+%%     \midrule
+%%     \texttt{{\char'134}author} & 100& Author \\
+%%     \texttt{{\char'134}table}& 300 & For tables\\
+%%     \texttt{{\char'134}table*}& 400& For wider tables\\
+%%     \bottomrule
+%%   \end{tabular}
+%% \end{table}
+
+
+%% The ``\verb|figure|'' environment should be used for figures. One or
+%% more images can be placed within a figure. If your figure contains
+%% third-party material, you must clearly identify it as such, as shown
+%% in the example below.
+%% \begin{figure}
+%%   \centering
+%%   %\includegraphics[width=\linewidth]{sample-franklin}
+%%   \caption{1907 Franklin Model D roadster. Photograph by Harris \&
+%%     Ewing, Inc. [Public domain], via Wikimedia
+%%     Commons. (\url{https://goo.gl/VLCRBB}).}
+%% \end{figure}
+
+%% Define the bibliography file to be used
+\bibliography{main}
+
+%%
+%% If your work has an appendix, this is the place to put it.
+\appendix
+
+\end{document}
