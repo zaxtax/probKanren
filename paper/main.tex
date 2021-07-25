@@ -64,7 +64,7 @@ url=http://webyrd.net/,
 \begin{abstract}
   Probabilistic programming is sometimes described as a generalisation
   of logic programming where instead of just returning a set of facts
-  that answer a given query, we return a probability distribution over
+  that answer a given query, which return a probability distribution over
   facts that answer a given query. But many contemporary probabilistic
   logic programming languages are not implemented as simple extensions
   of existing logic programming languages but instead involve their
@@ -140,6 +140,9 @@ language. The goal primitives consist of a \texttt{fresh} form for
 introducing logic variables, a unification primitive, a conjunction
 combinator, and a disjunction combinator. 
 
+
+Define terms, goals, and substitutions here
+
 \subsection{Probabilistic Programming}
 
 Probabilistic Programming Languages\cite{wood2014new,
@@ -175,11 +178,11 @@ as we run them that collection execution traces will be an empirical
 distribution of the given program. We call each of these execution traces
 particles and the below method is how we obtain them along with their weights $w$.
 
-\begin{equation}
-  x_n \sim f(x_n \mid x_{0:n-1}) \\
-  w_n^{(k)} = \frac{g(x_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
-  W_n^{(k)} = W_{n-1}^{(k)} w_n^{(k)}
-\end{equation}
+\begin{eqnarray}
+  x_n &\sim& f(x_n \mid x_{0:n-1}) \\
+  w_n^{(k)} &=& \frac{g(x_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
+  W_n^{(k)} &=& W_{n-1}^{(k)} w_n^{(k)}
+\end{eqnarray}
 
 The weights are then normalised at the end to make a proper probability distribution.
 
@@ -202,6 +205,10 @@ As the SMC resampling step was defined in the previous section
 Particle Cascades \cite{PaigeWDT14} remove this barrier allowing
 every particle to be resampled asynchronously with the associated
 weights being relative to a global running average. % double-check this
+
+\section{Grammar and Definitions}
+
+Define distributional clauses here
 
 \section{Proposed Method}
 

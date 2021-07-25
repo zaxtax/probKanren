@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.10.0 (TeX Live 2019/Debian)  (format=lualatex 2020.10.18)  25 JUL 2021 13:17
+This is LuaTeX, Version 1.10.0 (TeX Live 2019/Debian)  (format=lualatex 2020.10.18)  25 JUL 2021 14:09
  system commands enabled.
 **main.tex
 (./main.tex
@@ -2611,13 +2611,13 @@ runsystem(rm main.pyg)...executed
 Here is how much of LuaTeX's memory you used:
  36641 strings out of 481365
  100000,1373583 words of node,token memory allocated
- 666 words of node memory still in use:
-   7 hlist, 2 vlist, 3 rule, 7 glue, 4 kern, 1 glyph, 18 attribute, 67 glue_spec
-, 18 attribute_list, 1 write, 1 pdf_action nodes
-   avail lists: 2:768,3:207,4:114,5:293,6:67,7:3512,8:96,9:320,10:14,11:264
+ 658 words of node memory still in use:
+   7 hlist, 2 vlist, 3 rule, 7 glue, 4 kern, 1 glyph, 16 attribute, 67 glue_spec
+, 16 attribute_list, 1 write, 1 pdf_action nodes
+   avail lists: 2:772,3:193,4:113,5:285,6:67,7:3346,8:99,9:321,10:17,11:266
  51649 multiletter control sequences out of 65536+600000
- 154 fonts using 47501899 bytes
- 82i,20n,140p,10119b,2230s stack positions out of 5000i,500n,10000p,200000b,100000s
+ 154 fonts using 47501763 bytes
+ 82i,21n,140p,10119b,2224s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libertinus
 Math-Regular.otf></usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus
 -fonts/LibertinusMath-Regular.otf></usr/share/texlive/texmf-dist/fonts/opentype/
@@ -2629,7 +2629,7 @@ bertinusMono-Regular.otf></usr/share/texlive/texmf-dist/fonts/opentype/public/li
 bertinus-fonts/LibertinusSerif-Italic.otf></usr/share/texlive/texmf-dist/fonts/o
 pentype/public/libertinus-fonts/LibertinusSerif-Regular.otf></usr/share/texlive/
 texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSans-Bold.otf>
-Output written on main.pdf (5 pages, 142465 bytes).
+Output written on main.pdf (5 pages, 142967 bytes).
 
 PDF statistics: 225 PDF objects out of 1000 (max. 8388607)
  38 named destinations out of 1000 (max. 131072)
