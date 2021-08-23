@@ -5,46 +5,45 @@ The style file: elsarticle-num-names.bst
 Database file #1: main.bib
 Reallocated singl_function (elt_size=4) to 100 items from 50.
 Warning--empty pages in belle2015probabilistic
-Warning--empty pages in swords2013rkanren
-You've used 15 entries,
+You've used 13 entries,
             2918 wiz_defined-function locations,
-            719 strings with 7969 characters,
-and the built_in function-call counts, 11104 in all, are:
-= -- 794
-> -- 468
+            710 strings with 7620 characters,
+and the built_in function-call counts, 9895 in all, are:
+= -- 729
+> -- 382
 < -- 12
-+ -- 186
-- -- 159
-* -- 1260
-:= -- 1516
-add.period$ -- 18
-call.type$ -- 15
-change.case$ -- 126
-chr.to.int$ -- 15
-cite$ -- 17
-duplicate$ -- 844
-empty$ -- 831
-format.name$ -- 210
-if$ -- 2111
++ -- 154
+- -- 129
+* -- 1092
+:= -- 1318
+add.period$ -- 17
+call.type$ -- 13
+change.case$ -- 106
+chr.to.int$ -- 13
+cite$ -- 14
+duplicate$ -- 766
+empty$ -- 757
+format.name$ -- 172
+if$ -- 1923
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 158
-newline$ -- 86
-num.names$ -- 60
-pop$ -- 320
+missing$ -- 138
+newline$ -- 76
+num.names$ -- 52
+pop$ -- 277
 preamble$ -- 1
-purify$ -- 127
+purify$ -- 107
 quote$ -- 0
-skip$ -- 263
+skip$ -- 265
 stack$ -- 0
-substring$ -- 466
-swap$ -- 607
-text.length$ -- 9
+substring$ -- 442
+swap$ -- 553
+text.length$ -- 10
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 129
-warning$ -- 2
-while$ -- 69
+type$ -- 111
+warning$ -- 1
+while$ -- 62
 width$ -- 0
-write$ -- 223
-(There were 2 warnings)
+write$ -- 201
+(There was 1 warning)

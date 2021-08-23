@@ -1,8 +1,10 @@
 Probabilistic programming is sometimes described as a generalisation
-  of logic programming where instead of just returning a set of facts
-  that answer a given query, which return a probability distribution over
-  facts that answer a given query. But many contemporary probabilistic
-  logic programming languages are not implemented as simple extensions
-  of existing logic programming languages but instead involve their
-  own unique implementations. Here we introduce probKanren, a simple
-  extension to miniKanren that transforms
+  of logic programming where instead of just returning a set of
+  answers to a given query, we also return a probability distribution
+  over those answers. But many contemporary probabilistic logic
+  programming languages are not implemented as simple extensions of
+  existing logic programming languages but instead involve their own
+  unique implementations. Here we introduce probKanren, a simple
+  extension to microKanren that transforms it into a probabilistic
+  programming language without needing to make any modifications to
+  the underlying search.

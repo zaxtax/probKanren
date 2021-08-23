@@ -16,6 +16,8 @@
 %% Minted listings support 
 %% Need pygment <http://pygments.org/> <http://pypi.python.org/pypi/Pygments>
 \usepackage{minted}
+\usepackage{syntax}
+\shortverb{\|}
 %% auto break lines
 \setminted{breaklines=true}
 
@@ -33,12 +35,12 @@
 
 %%
 %% This command is for the conference information
-\conference{Woodstock'21: Symposium on the irreproducible science,
-  June 07--11, 2021, Woodstock, NY}
+\conference{PLP '21: The 8th Workshop on Probabilistic Logic Programming,
+  September 20--27, 2021, Porto, Portugal}
 
 %%
 %% The "title" command
-\title{probKanren: A Simple Probabilistic extension for miniKanren}
+\title{probKanren: A Simple Probabilistic extension for microKanren}
 
 %%
 %% The "author" command and its associated commands are used to define
@@ -48,8 +50,8 @@
 email=zinkov@robots.ox.ac.uk,
 url=https://zinkov.com/,
 ]
-\address[1]{Peoples' Friendship University of Russia (RUDN University),
-  6 Miklukho-Maklaya St, Moscow, 117198, Russian Federation}
+\address[1]{Dept. of Engineering Science, University of Oxford,
+  25 Banbury Rd, Oxford, UK}
 
 \author[2]{William E. Byrd}[%
 %orcid=0000-0001-7116-9338,
@@ -63,13 +65,15 @@ url=http://webyrd.net/,
 %% article.
 \begin{abstract}
   Probabilistic programming is sometimes described as a generalisation
-  of logic programming where instead of just returning a set of facts
-  that answer a given query, which return a probability distribution over
-  facts that answer a given query. But many contemporary probabilistic
-  logic programming languages are not implemented as simple extensions
-  of existing logic programming languages but instead involve their
-  own unique implementations. Here we introduce probKanren, a simple
-  extension to miniKanren that transforms
+  of logic programming where instead of just returning a set of
+  answers to a given query, we also return a probability distribution
+  over those answers. But many contemporary probabilistic logic
+  programming languages are not implemented as simple extensions of
+  existing logic programming languages but instead involve their own
+  unique implementations. Here we introduce probKanren, a simple
+  extension to microKanren that transforms it into a probabilistic
+  programming language without needing to make any modifications to
+  the underlying search.
 \end{abstract}
 
 %%
@@ -98,6 +102,16 @@ that satisfy a set of logical constraints. A natural generalisation
 to this domain is adding a notion of uncertainty to this set of answers
 by associating with them a probability distribution.
 
+But the conceptual simplicity of this sort of generalisation is not reflected
+in the complexity of many existing probabilistic logic programming systems.
+They often involve making implementing sophisticated algorithms and the underlying
+systems are not just implemented on top of existing logic programming systems.
+
+We believe a conceptually simple extension deserves a conceptually
+simple implementation to go along with it. We thus contribute a simple
+way to extend microkanren a small logic programming DSL such that it
+becomes a probabilistic programming language.
+
 \subsection{Illustrated Example}
 
 To help explain how to use probKanren we introduce the following example:
@@ -108,40 +122,78 @@ To help explain how to use probKanren we introduce the following example:
     (greatero q 0))
 \end{minted}
 
+\begin{minted}{Scheme}
+  (run 1000 (q)
+    (beta 1 1 q)
+    (flip q #t))
+\end{minted}
+
 This probKanren program draws 1000 samples from a normal distribution truncated
 below 0.
-
-\subsection{Contributions}
 
 \section{Related Work}
 
 There is a rich history of extending logic programming formalisms to
 support probabilistic inference. Early systems like
 PRISM\cite{sato1997prism} and ProbLog\cite{de2007problog} allowed
-associating discrete distributions with facts. Later
-work\cite{gutmann2010extending} introduces distribution clauses so
-that some continuous distributions. Other work extended these methods
-further while focusing on efficient exact inference algorithms like
-model weight integration\cite{islam2012inference,
-  belle2015probabilistic}. Our work is most similar to
-\cite{gutmann2011magic} except that while they combine their forward
-reasoning with an importance sampler we use a particle cascade instead
-which can be more sample efficient.
+associating discrete distributions with facts. Early versions of
+ProbLog were also built on top of Prolog matching one of the goals of
+our work. Later work\cite{gutmann2010extending} introduces
+distribution clauses so that some continuous distributions. Other work
+extended these methods further while focusing on efficient exact
+inference algorithms like model weight
+integration\cite{islam2012inference, belle2015probabilistic}. Our work
+is most similar to \cite{gutmann2011magic} except that while they
+combine their forward reasoning with an importance sampler we use a
+particle cascade instead which can be more sample efficient.
 
 \section{Background}
 
-\subsection{miniKanren}
+\subsection{microKanren}
 
-\textsc{miniKanren}\cite{byrd2017unified, daniel2018reasoned} is a
-pure logic programming language embedded in Scheme. The language
-consists of a set of terms, functions for constructing, a set of goal
-primitives, and two run functions to answer queries in the
-language. The goal primitives consist of a \texttt{fresh} form for
-introducing logic variables, a unification primitive, a conjunction
-combinator, and a disjunction combinator. 
+\textsc{microKanren}\cite{10.1145/2989225.2989230, daniel2018reasoned}
+is a pure logic programming language embedded in Scheme. The language
+consists of a set of terms, a set of goal primitives, and two run
+functions to answer queries in the language. The goal primitives
+consist of a \texttt{fresh} form for introducing logic variables, a
+unification primitive, a conjunction combinator, a disjunction
+combinator, and ways to define and use relations.
 
+\subsection{Grammar and Definitions}
 
-Define terms, goals, and substitutions here
+\begin{figure}
+\begin{grammar}
+<prog> ::= (run <number> (<id>) <goal-expr>)
+
+<goal-expr> ::= (disj <goal-expr> <goal-expr>) \alt
+	        (conj <goal-expr> <goal-expr>) \alt
+                (fresh (<id>) <goal-expr>) \alt
+		(== <term-expr> <term-expr>) \alt
+		(letrec-rel ((<id> (<id> ...) <goal-expr>) ...) \\
+		\hspace{\grammarindent} <goal-expr>) \alt
+		(call-rel <lexical-var-ref> <term-expr> ...) \alt
+		(prim-rel-call <lexical-var-ref> <term-expr> ...) \alt
+		(delay <goal-expr>)
+
+<term-expr> ::= (quote <datum>) \alt
+                <lexical-var-ref> \alt
+                (cons <term-expr> <term-expr>)
+
+<term> ::= <number> \alt
+           \#f | \#t \alt
+	   <symbol> \alt
+	   (<term> . <term>) \alt
+	   <logic-var>
+
+\end{grammar}
+\end{figure}
+
+To create probkanren we extend this grammar with distribution clauses
+such as \texttt{normal} and \texttt{flip}. These are just another type
+of goal expression. We do not need to add a notion of probabilistic
+variables as they can just be seen as logic variables constrained in
+a particular way.
+
 
 \subsection{Probabilistic Programming}
 
@@ -206,20 +258,16 @@ Particle Cascades \cite{PaigeWDT14} remove this barrier allowing
 every particle to be resampled asynchronously with the associated
 weights being relative to a global running average. % double-check this
 
-\section{Grammar and Definitions}
-
-Define distributional clauses here
-
 \section{Proposed Method}
 
-We propose to extend \textsc{miniKanren} by augmenting each of the
+We propose to extend \textsc{microKanren} by augmenting each of the
 search streams with a set of particles. These particles represent the
 empirical distribution of that stream. Each particle has associated
 with it a substitution of all the logic and random variables as well
 as a weight that is proportional to the likelihood of the substitution.
 
 An initial set of particles is created from the probabilistic program
-when it is first run. As disjunctions like \texttt{conde} are encountered,
+when it is first run. As disjunctions (\texttt{disj}) are encountered,
 we split evenly the number of particles allocated to each stream. Whenever
 we encounter a unification primitive, we run a resampling step. This
 helps to prune low-weight particles and replicate high weight ones.
@@ -232,32 +280,49 @@ We follow \cite{gutmann2010extending} and place the following restrictions
 on our distribution clauses and the random variables they specify.
 
 Firstly, the arguments of distribution clauses must be
-ground. Secondly, a random variable can not unify with any arithmetic
-expression
+ground. Secondly, a random variable cannot unify with any arithmetic
+expression.
+
+This extension does not modify the search and streams are managed
+exactly as in microkanren. An additional advantage of this is thanks
+to the microkanren search being complete, if we generate enough
+particles we are guaranteed to recover the true posterior as all paths
+of the search space will eventually be explored.
 
 
 \section{Experiments}
 
-One of the experiments should be something from the probabilistic logic literature.
+We validate that probKanren is at least as expressive as other probabilistic
+logic programming languages by implementing the Friends who Smoke model.
 
-Friends who Smoke is a probabilistic logic program which models the social nature of
-who smokes cigarettes. The model predicts that people who are friends with people
-who smoke are more likely to smoke.
+Friends who Smoke is a probabilistic logic program which models the
+social nature of who smokes cigarettes. The model predicts that people
+who are friends with people who smoke are more likely to smoke. We
+replicate the example on
+\url{https://dtai.cs.kuleuven.be/problog/tutorial/basic/05_smokers.html}
+using 2000 particles and get an empirical distribution that seems to
+match up with the discrete distribution returned from ProbLog.
 
-We could include experiment from Noah Goodman's dippl work like a semantic parsing
-example\\ \url{http://dippl.org/examples/semanticparsing.html}
+%% Compare to birch or Anglican on some top examples as well
 
-We could include program synthesis experiment, where probabilities
-allow us to specify a soft preference for using certain language
-primitives in a similar spirit to
-\textsc{rKanren}\cite{swords2013rkanren} or neural-guided search
-\cite{zhang2018neural}.
+%% We could include experiment from Noah Goodman's dippl work like a semantic parsing
+%% example\\ \url{http://dippl.org/examples/semanticparsing.html}
+
+%% We could include program synthesis experiment, where probabilities
+%% allow us to specify a soft preference for using certain language
+%% primitives in a similar spirit to
+%% \textsc{rKanren}\cite{swords2013rkanren} or neural-guided search
+%% \cite{zhang2018neural}.
 
 \section{Conclusions}
 
-We made a cool and simple to implement extension to
-\textsc{miniKanren} that let's us support probabilistic inference on
-both discrete and continuous distributions.
+We made a simple to implement extension to \textsc{microKanren} that
+let's us support probabilistic inference on both discrete and
+continuous distributions. The approach does not require modifying the
+underlying search algorithm or touch any of the backtracking code and
+comes with a theoretical guarantee that if the underlying search is
+complete then the probabilistic extension will require the true
+posterior given enough particles.
 
 %% \begin{table*}
 %%   \caption{Frequency of Special Characters}

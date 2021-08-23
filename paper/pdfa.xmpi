@@ -69,7 +69,7 @@
   <rdf:Description rdf:about="" xmlns:dc="http://purl.org/dc/elements/1.1/"> 
    <dc:format>application/pdf</dc:format> 
    <dc:type><rdf:Bag><rdf:li>journal</rdf:li></rdf:Bag></dc:type>
-   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">probKanren: A Simple Probabilistic extension for miniKanren</rdf:li></rdf:Alt></dc:title>
+   <dc:title><rdf:Alt><rdf:li xml:lang="x-default">probKanren: A Simple Probabilistic extension for microKanren</rdf:li></rdf:Alt></dc:title>
    <dc:creator><rdf:Seq><rdf:li>Robert Zinkov</rdf:li>
      <rdf:li>William E. Byrd</rdf:li></rdf:Seq></dc:creator>
    <dc:rights><rdf:Alt><rdf:li xml:lang="x-default">© 2021 Copyright for this paper by its authors. Use permitted under Creative Commons License Attribution 4.0 International (CC BY 4.0).</rdf:li></rdf:Alt></dc:rights>
@@ -87,9 +87,9 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmp="http://ns.adobe.com/xap/1.0/"> 
    <xmp:CreatorTool>LaTeX with hyperref</xmp:CreatorTool> 
-   <xmp:ModifyDate>2021-07-25T14:09:09+01:00</xmp:ModifyDate> 
-   <xmp:CreateDate>2021-07-25T14:09:09+01:00</xmp:CreateDate> 
-   <xmp:MetadataDate>2021-07-25T14:09:09+01:00</xmp:MetadataDate> 
+   <xmp:ModifyDate>2021-08-16T11:39:48+01:00</xmp:ModifyDate> 
+   <xmp:CreateDate>2021-08-16T11:39:48+01:00</xmp:CreateDate> 
+   <xmp:MetadataDate>2021-08-16T11:39:48+01:00</xmp:MetadataDate> 
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpRights = "http://ns.adobe.com/xap/1.0/rights/"> 
    <xmpRights:Marked>True</xmpRights:Marked>
@@ -98,7 +98,7 @@
   </rdf:Description> 
   <rdf:Description rdf:about="" xmlns:xmpMM="http://ns.adobe.com/xap/1.0/mm/"> 
    <xmpMM:DocumentID>uuid:DF005B57-2A06-8753-7167-92D8CE935460</xmpMM:DocumentID> 
-   <xmpMM:InstanceID>uuid:5B7122B7-FE1E-6E76-E5A6-05A0B1637AC4</xmpMM:InstanceID> 
+   <xmpMM:InstanceID>uuid:8BB881FA-2DBB-7BE6-BFCA-5A6B0184CD1A</xmpMM:InstanceID> 
   </rdf:Description> 
  </rdf:RDF> 
 </x:xmpmeta> 

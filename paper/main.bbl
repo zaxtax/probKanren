@@ -1,4 +1,4 @@
-\begin{thebibliography}{15}
+\begin{thebibliography}{13}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\href}[2]{#2}
@@ -64,16 +64,18 @@
   programming},
 \newblock \bibinfo{journal}{Theory and Practice of Logic Programming}
   \bibinfo{volume}{11} (\bibinfo{year}{2011}) \bibinfo{pages}{663--680}.
-%Type = Article
-\bibitem[{Byrd et~al.(2017)Byrd, Ballantyne, Rosenblatt, and
-  Might}]{byrd2017unified}
-\bibinfo{author}{W.~E. Byrd}, \bibinfo{author}{M.~Ballantyne},
-  \bibinfo{author}{G.~Rosenblatt}, \bibinfo{author}{M.~Might},
-\newblock \bibinfo{title}{A unified approach to solving seven programming
-  problems (functional pearl)},
-\newblock \bibinfo{journal}{Proceedings of the ACM on Programming Languages}
-  \bibinfo{volume}{1} (\bibinfo{year}{2017}) \bibinfo{pages}{1--26}. \URLprefix
-  \url{https://doi.org/10.1145/3110252}.
+%Type = Inproceedings
+\bibitem[{Hemann et~al.(2016)Hemann, Friedman, Byrd, and
+  Might}]{10.1145/2989225.2989230}
+\bibinfo{author}{J.~Hemann}, \bibinfo{author}{D.~P. Friedman},
+  \bibinfo{author}{W.~E. Byrd}, \bibinfo{author}{M.~Might},
+\newblock \bibinfo{title}{A small embedding of logic programming with a simple
+  complete search},
+\newblock in: \bibinfo{booktitle}{Proceedings of the 12th Symposium on Dynamic
+  Languages}, DLS 2016, \bibinfo{publisher}{Association for Computing
+  Machinery}, \bibinfo{year}{2016}, p. \bibinfo{pages}{96–107}. \URLprefix
+  \url{https://doi.org/10.1145/2989225.2989230}.
+  \DOIprefix\doi{10.1145/2989225.2989230}.
 %Type = Book
 \bibitem[{Friedman et~al.(2018)Friedman, Byrd, Kiselyov, and
   Hemann}]{daniel2018reasoned}
@@ -122,22 +124,5 @@
 \newblock in: \bibinfo{booktitle}{Advances in Neural Information Processing
   Systems}, \bibinfo{year}{2014}, pp. \bibinfo{pages}{3410--3418}. \URLprefix
   \url{https://proceedings.neurips.cc/paper/2014/hash/7eb7eabbe9bd03c2fc99881d04da9cbd-Abstract.html}.
-%Type = Inproceedings
-\bibitem[{Swords and Friedman(2013)}]{swords2013rkanren}
-\bibinfo{author}{C.~Swords}, \bibinfo{author}{D.~Friedman},
-\newblock \bibinfo{title}{rkanren: Guided search in minikanren},
-\newblock in: \bibinfo{booktitle}{Proceedings of Scheme Workshop},
-  \bibinfo{year}{2013}.
-%Type = Article
-\bibitem[{Zhang et~al.(2018)Zhang, Rosenblatt, Fetaya, Liao, Byrd, Might,
-  Urtasun, and Zemel}]{zhang2018neural}
-\bibinfo{author}{L.~Zhang}, \bibinfo{author}{G.~Rosenblatt},
-  \bibinfo{author}{E.~Fetaya}, \bibinfo{author}{R.~Liao},
-  \bibinfo{author}{W.~E. Byrd}, \bibinfo{author}{M.~Might},
-  \bibinfo{author}{R.~Urtasun}, \bibinfo{author}{R.~Zemel},
-\newblock \bibinfo{title}{Neural guided constraint logic programming for
-  program synthesis},
-\newblock \bibinfo{journal}{arXiv preprint arXiv:1809.02840}
-  (\bibinfo{year}{2018}).
 
 \end{thebibliography}
