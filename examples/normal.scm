@@ -19,7 +19,6 @@
     (normal 0 1 theta)
     (normal theta 1 4)))
 
-(define samples (run 10000 (q) (normal-mixture q)))
+(define samples (run-with-p 100000 (q) (normal-cond q)))
 
-(map (lambda (x) (display x) (newline)) samples)
-;(output-for-histogram samples)
+(output-for-histogram samples)
