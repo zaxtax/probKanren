@@ -109,7 +109,7 @@
 		    (let ((xs (random-normal mu-g sd-g)))
 		      `(,(ext-s x xs s) .
 			,(get-l s/l)))))
-	      'fail))))))
+	      (error "normal" "parameters are not ground")))))))
 
 (define (bern p b)
   (lambda (s/c)
@@ -125,4 +125,4 @@
 		    (let ((bs (random-bernoulli p-g)))
 		      `(,(ext-s b bs s) .
 			,(get-l s/l)))))
-	      'fail))))))
+	      (error "bern" "parameter is not ground")))))))
