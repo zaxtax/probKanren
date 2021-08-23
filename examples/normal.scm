@@ -10,10 +10,16 @@
 
 (define (normal-mixture q)
   (conde
+   ((normal -7 1 q))
    ((normal 0 1 q))
    ((normal 7 1 q))))
 
-(define samples (run 10000 (q) (normal-normal q)))
+(define (normal-cond theta)
+  (fresh ()
+    (normal 0 1 theta)
+    (normal theta 1 4)))
 
-(output-for-histogram
-  (map (lambda (x) (cons 1.0 x)) samples))
+(define samples (run 10000 (q) (normal-mixture q)))
+
+(map (lambda (x) (display x) (newline)) samples)
+;(output-for-histogram samples)

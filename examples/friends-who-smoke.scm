@@ -27,10 +27,29 @@
       (smokes b b-smokes)
       (constrain a-smokes b-smokes)))))
 
+;; (define (constrain a b)
+;;   (conde
+;;    ((bern 0.75 1) (== a b))
+;;    ((bern 0.25 1)
+;;     (conde
+;;      ((== a 0) (== b 1))
+;;      ((== a 1) (== b 0))))))
+
+;; (define (constrain a b)
+;;   (conde
+;;    ((bern 0.75 1) (== a b))
+;;    ((bern 0.25 1) (== a 0) (== b 1))
+;;    ((bern 0.25 1) (== a 1) (== b 0))))
+
+;; (define (constrain a b)
+;;   (conde
+;;    ((bern 0.75 1) (== a b))
+;;    ((bern 0.25 1) (=/= a b))))
+
 (define (constrain a b)
   (conde
-   ((== a b) (bern 0.75 1))
-   ((bern 0.25 0))))
+   ((bern 0.75 1) (== a b))
+   ((bern 0.25 1))))
 
 (define samples (run-with-p 300 (q) (smokes 'carl q)))
 (empirical samples)
