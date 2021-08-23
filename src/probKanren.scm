@@ -30,19 +30,21 @@
 (define (ext-s x v s) `((,x . ,v) . ,s))
 
 (define (per-particle particles f)
-  (cons (remq #f (map f (car particles)))
-	(cdr particles)))
+  (let ((s (remq 'fail (map f (car particles)))))
+    (if (null? s)
+	mzero
+	(unit (cons s (cdr particles))))))
 
 ;; TODO: Resampling should go here
 (define (== u v)
   (lambda (s/c)
-    (unit
-     (per-particle s/c
-       (lambda (s/l)
-	 (let ((s (unify u v (get-s s/l))))
-	   (if s `(,s . ,(get-l s/l)) #f)))))))
+    (per-particle s/c
+      (lambda (s/l)
+	(let ((s (unify u v (get-s s/l))))
+	  (if s `(,s . ,(get-l s/l)) 'fail))))))
 
 (define (unit s/c) (cons s/c mzero))
+
 (define mzero '())
 
 (define (unify u v s)
@@ -94,8 +96,7 @@
 
 (define (normal mu sd x)
   (lambda (s/c)
-    (unit
-     (per-particle s/c
+    (per-particle s/c
       (lambda (s/l)
         (let ((s (get-s s/l)))		    
 	  (if (and (ground? mu s) (ground? sd s))
@@ -108,12 +109,11 @@
 		    (let ((xs (random-normal mu-g sd-g)))
 		      `(,(ext-s x xs s) .
 			,(get-l s/l)))))
-	      #f)))))))
+	      'fail))))))
 
-(define (flip p b)
+(define (bern p b)
   (lambda (s/c)
-    (unit
-     (per-particle s/c
+    (per-particle s/c
       (lambda (s/l)
         (let ((s (get-s s/l)))		    
 	  (if (ground? p s)
@@ -125,4 +125,4 @@
 		    (let ((bs (random-bernoulli p-g)))
 		      `(,(ext-s b bs s) .
 			,(get-l s/l)))))
-	      #f)))))))
+	      'fail))))))

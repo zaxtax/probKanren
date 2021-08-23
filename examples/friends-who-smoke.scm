@@ -3,31 +3,34 @@
 (load "../src/prob-miniKanren-wrappers.scm")
 (load "../src/postprocess.scm")
 
-(define (friends a b p)
+;; Adapted from https://dtai.cs.kuleuven.be/problog/tutorial/tutslides/01_basic.html
+;; Adapted from https://dtai.cs.kuleuven.be/problog/tutorial/basic/05_smokers.html
+
+(define (friends a b)
   (conde
-   ((== a 'ann) (== b 'bob) (== p #t))
-   ((== a 'bob) (== b 'carl) (== p #t))
-   ((== p #f))))
+   ((== a 'ann) (== b 'bob))
+   ((== a 'bob) (== b 'carl))))
    
 (define (stress person)
-  (flip 0.3 person))
+  (bern 0.3 person))
 
 (define (influences person)
-  (flip 0.2 person))
+  (bern 0.2 person))
 
 (define (smokes a a-smokes)
   (conde
    ((fresh (a-stressed)
-      (stress a-stressed) (== a-stressed #t) (== a-smokes #t)))
-   ((flip 0.5 a-smokes)
-    (fresh (b b-smokes p)
+      (stress a-stressed) (== a-stressed a-smokes)))
+   ((bern 0.5 a-smokes)
+    (fresh (b b-smokes)
+      (friends b a)
       (smokes b b-smokes)
-      (friends b a p)
-      (constrain p)))))
+      (constrain a-smokes b-smokes)))))
 
-(define (constrain p)
+(define (constrain a b)
   (conde
-   ((== p #t) (flip 0.75 #t))
-   ((flip 0.25 #t))))
+   ((== a b) (bern 0.75 1))
+   ((bern 0.25 0))))
 
-;(define samples (run 2 (q) (smokes 'carl q)))
+(define samples (run-with-p 300 (q) (smokes 'carl q)))
+(empirical samples)

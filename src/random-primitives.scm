@@ -27,7 +27,7 @@
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pdf
 (define (random-bernoulli p)
   (check-p p "(random-bernoulli p)")
-  (if (<= (random 1.0) p) #t #f))
+  (if (<= (random 1.0) p) 1.0 0.0))
 
 (define (logp-bernoulli p b)
   (check-p p "(logp-bernoulli p)")

@@ -32,6 +32,11 @@
     ((_ n (x ...) g0 g ...)
      (concat (map reify-1st (take n (call/goal n (fresh (x ...) g0 g ...))))))))
 
+(define-syntax run-with-p
+  (syntax-rules ()
+    ((_ n (x ...) g0 g ...)
+     (concat (map reify-1st-with-p (take n (call/goal n (fresh (x ...) g0 g ...))))))))
+
 ;; (define-syntax run*
 ;;   (syntax-rules ()
 ;;     ((_ (x ...) g0 g ...)
@@ -58,10 +63,17 @@
 	    (cons (car $) (take (- n k) (cdr $))))))))
 
 (define (reify-1st s/c)
-  (get-s (per-particle s/c
+  (caar (per-particle s/c
 	   (lambda (s/c)
 	     (let ((v (walk* (var 0) (get-s s/c))))
 	       (walk* v (reify-s v '())))))))
+
+(define (reify-1st-with-p s/c)
+  (caar (per-particle s/c
+	   (lambda (s/c)
+	     (let ((v (walk* (var 0) (get-s s/c))))
+	       (cons (walk* v (reify-s v '()))
+		     (exp (get-l s/c))))))))
 
 (define (walk* v s)
   (let ((v (walk v s)))
