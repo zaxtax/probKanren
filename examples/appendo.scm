@@ -17,6 +17,4 @@
 		    (== `(,x ,y) q)
 		    (appendo x y '(1 2 3 4 5)))))
 
-;(output-for-histogram (map (lambda (x) (cons x 1.0)) samples))
-
 (define c (count samples))

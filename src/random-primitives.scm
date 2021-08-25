@@ -16,6 +16,18 @@
   (unless (and (real? x) (>= x 0))
     (assertion-violation who (string-append x-name " is not a real number >= 0"))))
 
+(define (check-integer-gte-zero x x-name who)
+  (unless (and (integer? x) (>= x 0))
+    (assertion-violation who (string-append x-name " is not an integer >= 0"))))
+
+(define (check-list lst lst-name who)
+  (unless (list? lst)
+    (assertion-violation who (string-append lst-name " is not a list")))
+  (unless (for-all real? lst)
+    (assertion-violation who (string-append "at least one element of " lst-name " is not a real number")))
+  (when (null? lst)
+    (assertion-violation who (string-append lst-name " is empty"))))
+
 (define (bound logp . preds)
   (cond
    [(null? preds) logp]
@@ -23,6 +35,24 @@
    [else -inf.0]))
   
 (define pi (* (asin 1) 2))
+
+(define (repeat n thunk)
+  (let loop ([i 0]
+             [result '()])
+    (if (= i n)
+        result
+        (loop (add1 i) (cons (thunk) result)))))
+
+;; equivalent result to (apply + (repeat...))
+;; but presumably more efficient because not building up a list
+;; and requires that the thunk returns a number
+;; only used in random-binomial
+(define (repeat-sum n thunk)
+  (let loop ([i 0]
+             [result 0])
+    (if (= i n)
+        result
+        (loop (add1 i) (+ (thunk) result)))))
 
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pdf
 (define (random-bernoulli p)
@@ -100,3 +130,33 @@
 	[B (random-gamma b 1)])
     (/ A (+ A B))))
 
+
+;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pd
+(define (random-binomial trials p)
+  (let ([proc-string "(random-binomial trials p)"])
+    (check-integer-gte-zero trials "trials" proc-string)
+    (check-p p proc-string))
+  (repeat-sum trials (lambda () (random-bernoulli p))))
+
+;; same algorithm as rmultinom in R
+;; https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Multinom.html
+(define (random-multinomial trials ps)
+  ;; rescale ps (if necessary)
+  (define (scale-ps ps)
+    (let ([p-sum (apply + ps)])
+      (if (= p-sum 1)
+	  ps
+	  (map (lambda (p) (/ p p-sum)) ps))))
+  (let ([proc-string "(random-multinomial trials ps)"])
+    (check-integer-gte-zero trials "trials" proc-string)
+    (check-list ps "ps" proc-string))
+  (let loop ([p-scaled (scale-ps ps)]
+             [p-used '()]
+             [results '()])
+    (if (null? p-scaled)
+        (reverse results)
+        (let* ([p-now (car p-scaled)]
+               [p-now-adj-temp (/ p-now (- 1 (apply + p-used)))]
+               [p-now-adj (if (> p-now-adj-temp 1) 1 p-now-adj-temp)]
+               [result-next (random-binomial (- trials (apply + results)) p-now-adj)])
+          (loop (cdr p-scaled) (cons p-now p-used) (cons result-next results))))))
