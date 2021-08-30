@@ -54,6 +54,21 @@
         result
         (loop (add1 i) (+ (thunk) result)))))
 
+(define (cumulative-sum lst)
+  (check-list lst "lst" "(cumulative-sum lst)")
+  (let loop ([lst lst]
+	     [result '()]
+	     [total 0])
+    (if (null? lst)
+	(reverse result)
+	(let ([new-total (+ (car lst) total)])
+	  (loop (cdr lst) (cons new-total result) new-total)))))
+
+(define (ess weights)
+  (let ((n (fold-left (lambda (x y) (+ x (* y y))) 0 weights))
+	(m (fold-left (lambda (x y) (+ x y)) 0 weights)))
+    (/ (* m m) n)))
+
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pdf
 (define (random-bernoulli p)
   (check-p p "(random-bernoulli p)")
@@ -160,3 +175,42 @@
                [p-now-adj (if (> p-now-adj-temp 1) 1 p-now-adj-temp)]
                [result-next (random-binomial (- trials (apply + results)) p-now-adj)])
           (loop (cdr p-scaled) (cons p-now p-used) (cons result-next results))))))
+
+(define (resampling-draws counts particles)
+  (cond
+   [(null? counts) '()]
+   [(zero? (car counts)) (resampling-draws (cdr counts) (cdr particles))]
+   [else
+    (cons (car particles) (resampling-draws
+			   (cons (sub1 (car counts)) (cdr counts))
+			   particles))]))
+
+
+(define resample-multinomial
+  (case-lambda
+   [(particles) (resample-multinomial particles (length particles))]
+   [(particles n)
+    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+      (let ((counts (random-multinomial n weights)))
+	(resampling-draws counts particles)))]))
+
+(define (find-stratified-indices cweights n i j acc)
+  (cond
+   [(= n i) acc]
+   [(null? cweights) acc] ;; Superfluous?
+   [else
+    (let ((p (/ (+ (random 1.0) i) n)))
+      (let loop ([j-new j]
+		 [cweights-new cweights])
+	(if (< p (car cweights-new))
+	    (find-stratified-indices cweights-new n (add1 i) j-new (cons j-new acc))
+	    (loop (add1 j-new) (cdr cweights-new)))))]))
+
+(define resample-stratified
+  (case-lambda
+   [(particles) (resample-stratified particles (length particles))]
+   [(particles n)
+    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+      (let ((cweights (cumulative-sum weights)))
+	(let ((counts (find-stratified-indices cweights n 0 0 '())))
+	  (resampling-draws counts particles))))]))
