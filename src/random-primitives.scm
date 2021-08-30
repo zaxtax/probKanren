@@ -216,3 +216,26 @@
 	    (l (apply + weights)))
 	(let ((counts (find-stratified-indices cweights l n 0 '() '())))
 	  (resampling-draws counts particles))))]))
+
+(define (find-systematic-indices cweights l u n i j acc)
+  (cond
+   [(= n i) (reverse (cons (length j) acc))]
+   [else
+    (let ((p (* l (/ (+ u i) n))))
+      (let loop ([j-new j]
+		 [cweights-new cweights]
+		 [acc-new acc])
+	(if (< p (car cweights-new))
+	    (find-systematic-indices
+	     cweights-new l u n (add1 i) (cons '() j-new) acc-new)
+	    (loop '() (cdr cweights-new) (cons (length j-new) acc-new)))))]))
+
+(define resample-systematic
+  (case-lambda
+   [(particles) (resample-systematic particles (length particles))]
+   [(particles n)
+    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+      (let ((cweights (cumulative-sum weights))
+	    (l (apply + weights)))
+	(let ((counts (find-systematic-indices cweights l (random 1.0) n 0 '() '())))
+	  (resampling-draws counts particles))))]))
