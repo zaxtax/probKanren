@@ -194,23 +194,25 @@
       (let ((counts (random-multinomial n weights)))
 	(resampling-draws counts particles)))]))
 
-(define (find-stratified-indices cweights n i j acc)
+(define (find-stratified-indices cweights l n i j acc)
   (cond
-   [(= n i) acc]
-   [(null? cweights) acc] ;; Superfluous?
+   [(= n i) (reverse (cons (length j) acc))]
    [else
-    (let ((p (/ (+ (random 1.0) i) n)))
+    (let ((p (* l (/ (+ (random 1.0) i) n))))
       (let loop ([j-new j]
-		 [cweights-new cweights])
+		 [cweights-new cweights]
+		 [acc-new acc])
 	(if (< p (car cweights-new))
-	    (find-stratified-indices cweights-new n (add1 i) j-new (cons j-new acc))
-	    (loop (add1 j-new) (cdr cweights-new)))))]))
+	    (find-stratified-indices
+	     cweights-new l n (add1 i) (cons '() j-new) acc-new)
+	    (loop '() (cdr cweights-new) (cons (length j-new) acc-new)))))]))
 
 (define resample-stratified
   (case-lambda
    [(particles) (resample-stratified particles (length particles))]
    [(particles n)
     (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
-      (let ((cweights (cumulative-sum weights)))
-	(let ((counts (find-stratified-indices cweights n 0 0 '())))
+      (let ((cweights (cumulative-sum weights))
+	    (l (apply + weights)))
+	(let ((counts (find-stratified-indices cweights l n 0 '() '())))
 	  (resampling-draws counts particles))))]))
