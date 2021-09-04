@@ -25,7 +25,7 @@
 
 (define-syntax conde
   (syntax-rules ()
-    ((_ (g0 g ...) ...) (disj+ (conj+ g0 g ...) ...))))
+    ((_ (g0 g ...) ...) (disj (conj+ g0 g ...) ...))))
 
 (define-syntax run
   (syntax-rules ()

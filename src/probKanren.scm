@@ -4,13 +4,22 @@
 
 (define (concat l) (apply append l))
 
-(define (split lst)
-  (let loop ((tortoise lst) (hare lst) (acc '()))
-    (if (or (null? hare) (null? (cdr hare)))
-        (cons (reverse acc) tortoise)
-        (loop (cdr  tortoise) 
-              (cddr hare) 
-              (cons (car tortoise) acc)))))
+(define (split-at l k)
+  (define (split-at-aux l k acc)
+    (cond
+     [(null? l) (cons acc l)]
+     [(zero? k) (cons acc l)]
+     [else
+      (split-at-aux (cdr l) (sub1 k) (cons (car l) acc))]))
+  (split-at-aux l k '()))
+
+(define (split-into l k)
+  (define (split-into-aux l k acc)
+    (let ((c/r (split-at l k)))
+      (if (null? (cdr c/r))
+          (cons (car c/r) acc)
+          (split-into-aux (cdr c/r) k (cons (car c/r) acc)))))
+  (reverse (split-into-aux l k '())))
 
 (define *total-active-particles* 0)
 (define *max-particles* 10000)
@@ -72,13 +81,21 @@
     (let ((c (get-c s/c)))    
       ((f (var c)) `(,(get-s s/c) . ,(+ c 1))))))
 
-(define (disj g1 g2)
+(define (msum gs ss)
+  (cond
+   [(null? gs) mzero]
+   [(null? ss) mzero]
+   [else
+    (mplus ((car gs) (car ss))
+	   (msum (cdr gs) (cdr ss)))]))
+
+(define (disj . gs)
   (lambda (s/c)
     (let* ((s (get-s s/c))
 	   (c (get-c s/c))
-	   (o/e (split s)))
-      (mplus (g1 `(,(car o/e) . ,c))
-	     (g2 `(,(cdr o/e) . ,c))))))
+	   (n (ceiling (/ (length s) (length gs))))
+	   (chunks (split-into s n)))
+      (msum gs (map (lambda (x) (cons x c)) chunks)))))
 
 (define (conj g1 g2) (lambda (s/c) (bind (g1 s/c) g2)))
 
