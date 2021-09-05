@@ -76,7 +76,7 @@
 
 (define (logp-bernoulli p b)
   (check-p p "(logp-bernoulli p)")
-  (if b (log p) (log (- 1 p))))
+  (if (= b 1) (log p) (log (- 1 p))))
 
 (define random-normal
   (case-lambda
@@ -109,43 +109,20 @@
                 (+ mu (* sd x))
                 (- mu (* sd x))))))))
 
-;; Marsaglia and Tsang’s Method
-;; from https://www.hongliangjie.com/2012/12/19/how-to-generate-gamma-random-variables/
-;; material at url refers to rate parameter as scale
-(define (random-gamma shape rate)
-  (let ([proc-string "(random-gamma shape rate)"])
-    (check-positive-real shape "shape" proc-string)
-    (check-positive-real rate "rate" proc-string))
-  (let loop ([shape shape]
-             [rate rate])
-    (if (not (= rate 1))
-        (/ (loop shape 1) rate)
-        (if (< shape 1)
-            (* (loop (add1 shape) rate)
-               (expt (random 1.0) (/ 1 shape)))
-            (let* ([d (- shape 1/3)]
-                   [c (/ 1 (sqrt (* 9 d)))]
-                   [Z (random-normal)]
-                   [U (random 1.0)]
-                   [V (expt (add1 (* c Z)) 3)]
-                   [z-comp (/ -1 c)]
-                   [log-U-comp (+ (* 1/2 (expt Z 2))
-                                  (- d (* d V))
-                                  (* d (log V)))])
-              (if (and (> Z z-comp) (< (log U) log-U-comp))
-                  (* d V)
-                  (loop shape rate)))))))
+(define (random-uniform mn mx)
+  (let ([proc-string "(random-uniform mn mx)"])
+    (check-real mn "mn" proc-string)
+    (check-real mx "mx" proc-string)
+    (unless (> mx mn)
+      (assertion-violation proc-string "mx is not greater than mn")))
+  (+ mn (* (- mx mn) (random 1.0))))
 
-  ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pdf
-(define (random-beta a b)
-  (let ([proc-string "(random-beta a b)"])
-    (check-positive-real a "a" proc-string)
-    (check-positive-real b "b" proc-string))
-  (let ([A (random-gamma a 1)]
-	[B (random-gamma b 1)])
-    (/ A (+ A B))))
-
-
+(define (logp-uniform lo hi x)
+  (check-real lo "lo" "(logp-uniform lo hi x)")
+  (check-real hi "hi" "(logp-uniform lo hi x)")
+  (check-real x "x" "(logp-normal mu sd x)")
+  (- (log (- hi lo))))
+  
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pd
 (define (random-binomial trials p)
   (let ([proc-string "(random-binomial trials p)"])

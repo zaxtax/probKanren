@@ -111,6 +111,23 @@
     ((procedure? $) (lambda () (bind ($) g)))
     (else (mplus (g (car $)) (bind (cdr $) g)))))
 
+(define (uniform lo hi x)
+  (lambda (s/c)
+    (per-particle s/c
+      (lambda (s/l)
+        (let ((s (get-s s/l)))		    
+	  (if (and (ground? lo s) (ground? hi s))
+	      (let ((lo-g (walk lo s))
+		    (hi-g (walk hi s)))
+		(if (ground? x s)
+		    `(,s .
+		      ,(+ (logp-uniform lo-g hi-g (walk x s))
+			  (get-l s/l)))
+		    (let ((xs (random-uniform lo-g hi-g)))
+		      `(,(ext-s x xs s) .
+			,(get-l s/l)))))
+	      (error "uniform" "parameters are not ground")))))))
+
 (define (normal mu sd x)
   (lambda (s/c)
     (per-particle s/c
