@@ -49,8 +49,8 @@
   (lambda (s/c)
     (per-particle s/c
       (lambda (s/l)
-	(let ((s (unify u v (get-s s/l))))
-	  (if s `(,s . ,(get-l s/l)) 'fail))))))
+       (let ((s (unify u v (get-s s/l))))
+         (if s `(,s . ,(get-l s/l)) 'fail))))))
 
 (define (unit s/c) (cons s/c mzero))
 
