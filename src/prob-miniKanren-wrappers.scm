@@ -23,6 +23,10 @@
       (lambda (x0)
         (fresh (x ...) g0 g ...))))))
 
+(define-syntax conde-geom
+  (syntax-rules ()
+    ((_ (g0 g ...) ...) (disj+ (conj+ g0 g ...) ...))))
+
 (define-syntax conde
   (syntax-rules ()
     ((_ (g0 g ...) ...) (disj (conj+ g0 g ...) ...))))
