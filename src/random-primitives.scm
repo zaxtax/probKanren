@@ -121,7 +121,9 @@
   (check-real lo "lo" "(logp-uniform lo hi x)")
   (check-real hi "hi" "(logp-uniform lo hi x)")
   (check-real x "x" "(logp-normal mu sd x)")
-  (- (log (- hi lo))))
+  (bound (- (log (- hi lo)))
+	 (>= x lo)
+	 (<= x hi)))
   
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pd
 (define (random-binomial trials p)
