@@ -52,4 +52,4 @@
    ((bern 0.25 1))))
 
 (define samples (run-with-p 300 (q) (smokes 'carl q)))
-(empirical samples)
+(empirical-mean samples)
