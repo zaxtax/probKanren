@@ -1,6 +1,15 @@
-(define (empirical samples)
+(define (empirical-mean samples)
   (/ (fold-left (lambda (x y) (+ x (* (car y) (cdr y)))) 0 samples)
      (fold-left (lambda (x y) (+ x (cdr y))) 0 samples)))
+
+(define (empirical-variance samples mean)
+  (let ((n (length samples)))
+    (if (< n 2)
+	(error "empirical-variance" "must have at least two samples")
+	(/ (fold-left (lambda (x y) (+ x (* (cdr y)
+					    (expt (- (car y) mean) 2))))
+		      0 samples)
+	   (sub1 n)))))
 
 (define (output-for-histogram samples)
   (map (lambda (s) (printf "~f\t~s\n" (cdr s) (car s)))
