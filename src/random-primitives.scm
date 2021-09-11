@@ -173,6 +173,24 @@
       (let ((counts (random-multinomial n weights)))
 	(resampling-draws counts particles)))]))
 
+(define resample-residual
+  (case-lambda
+   [(particles) (resample-residual particles (length particles))]
+   [(particles n)
+    (let* ((weights
+	    (map (lambda (x) (exp (cdr x))) particles))
+	   (first-counts
+	     (map (lambda (w) (exact (floor (* w n)))) weights))
+	   (R (fold-left + 0 first-counts)))
+      (if (> (- n R) 0)
+	  (resampling-draws first-counts particles)
+	  (let* ((resid-weights
+		  (map (lambda (w c) (/ (- (* n w) c) (- n R))) weights first-counts))
+		 (resid-counts (random-multinomial (- n R) resid-weights)))
+	    (resampling-draws
+	     (map + first-counts resid-counts)
+	     particles))))]))
+
 (define (find-stratified-indices cweights l n i j acc)
   (cond
    [(= n i) (reverse (cons (length j) acc))]
