@@ -69,6 +69,21 @@
 	(m (fold-left (lambda (x y) (+ x y)) 0 weights)))
     (/ (* m m) n)))
 
+;; rescale ps (if necessary)
+(define (scale-ps ps)
+  (let ([p-sum (apply + ps)])
+    (if (= p-sum 1)
+	ps
+	 (map (lambda (p) (/ p p-sum)) ps))))
+
+;; If log-weights are all likely to be small, rescale them to prevent underflow
+(define (rescaled-exp log-weights)
+  (let ((t (max log-weights)))
+    (map (lambda (w) (exp (- w t))) log-weights)))
+
+(define (rescaled-exp-normed log-weights)
+  (scale-ps (rescaled-exp log-weights)))
+
 ;; from https://www.cse.wustl.edu/~jain/books/ftp/ch5f_slides.pdf
 (define (random-bernoulli p)
   (check-p p "(random-bernoulli p)")
@@ -135,12 +150,6 @@
 ;; same algorithm as rmultinom in R
 ;; https://stat.ethz.ch/R-manual/R-devel/library/stats/html/Multinom.html
 (define (random-multinomial trials ps)
-  ;; rescale ps (if necessary)
-  (define (scale-ps ps)
-    (let ([p-sum (apply + ps)])
-      (if (= p-sum 1)
-	  ps
-	  (map (lambda (p) (/ p p-sum)) ps))))
   (let ([proc-string "(random-multinomial trials ps)"])
     (check-integer-gte-zero trials "trials" proc-string)
     (check-list ps "ps" proc-string))
@@ -164,12 +173,11 @@
 			   (cons (sub1 (car counts)) (cdr counts))
 			   particles))]))
 
-
 (define resample-multinomial
   (case-lambda
    [(particles) (resample-multinomial particles (length particles))]
    [(particles n)
-    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
       (let ((counts (random-multinomial n weights)))
 	(resampling-draws counts particles)))]))
 
@@ -178,7 +186,7 @@
    [(particles) (resample-residual particles (length particles))]
    [(particles n)
     (let* ((weights
-	    (map (lambda (x) (exp (cdr x))) particles))
+	    (rescaled-exp-normed (map (lambda (x) (cdr x)) particles)))
 	   (first-counts
 	     (map (lambda (w) (exact (floor (* w n)))) weights))
 	   (R (fold-left + 0 first-counts)))
@@ -208,7 +216,7 @@
   (case-lambda
    [(particles) (resample-stratified particles (length particles))]
    [(particles n)
-    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
       (let ((cweights (cumulative-sum weights))
 	    (l (apply + weights)))
 	(let ((counts (find-stratified-indices cweights l n 0 '() '())))
@@ -231,7 +239,7 @@
   (case-lambda
    [(particles) (resample-systematic particles (length particles))]
    [(particles n)
-    (let ((weights (map (lambda (x) (exp (cdr x))) particles)))
+    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
       (let ((cweights (cumulative-sum weights))
 	    (l (apply + weights)))
 	(let ((counts (find-systematic-indices cweights l (random 1.0) n 0 '() '())))
