@@ -1,4 +1,4 @@
-\begin{thebibliography}{14}
+\begin{thebibliography}{16}
 \expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\href}[2]{#2}
@@ -83,6 +83,24 @@
   \bibinfo{author}{O.~Kiselyov}, \bibinfo{author}{J.~Hemann},
   \bibinfo{title}{The Reasoned Schemer}, \bibinfo{edition}{2nd} ed.,
   \bibinfo{publisher}{MIT Press}, \bibinfo{year}{2018}.
+%Type = Article
+\bibitem[{Kiselyov et~al.(2005)Kiselyov, Shan, Friedman, and
+  Sabry}]{kiselyov2005backtracking}
+\bibinfo{author}{O.~Kiselyov}, \bibinfo{author}{C.-c. Shan},
+  \bibinfo{author}{D.~P. Friedman}, \bibinfo{author}{A.~Sabry},
+\newblock \bibinfo{title}{Backtracking, interleaving, and terminating monad
+  transformers: (functional pearl)},
+\newblock \bibinfo{journal}{ACM SIGPLAN Notices} \bibinfo{volume}{40}
+  (\bibinfo{year}{2005}) \bibinfo{pages}{192--203}.
+%Type = Inproceedings
+\bibitem[{Rozplokhas et~al.(2019)Rozplokhas, Vyatkin, and
+  Boulytchev}]{rozplokhas2019certified}
+\bibinfo{author}{D.~Rozplokhas}, \bibinfo{author}{A.~Vyatkin},
+  \bibinfo{author}{D.~Boulytchev},
+\newblock \bibinfo{title}{Certified semantics for minikanren},
+\newblock in: \bibinfo{booktitle}{Proceedings of the 2019 miniKanren and
+  Relational Programming Workshop}, \bibinfo{year}{2019}, pp.
+  \bibinfo{pages}{80--98}.
 %Type = Inproceedings
 \bibitem[{Wood et~al.(2014)Wood, Meent, and Mansinghka}]{wood2014new}
 \bibinfo{author}{F.~Wood}, \bibinfo{author}{J.~W. Meent},

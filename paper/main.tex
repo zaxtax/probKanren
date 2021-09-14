@@ -169,6 +169,25 @@ unification primitive \texttt{==}, a conjunction combinator
 define and apply relations. Further forms are shown in detail in
 \Cref{fig:grammar}.
 
+Goal expressions represent a possibly backtracking search
+procedure. These goals all take as input some state and output a
+stream of possible output states. We run these goals by starting with
+an initial state that holds an empty substitution dictionary, and
+passing it into the top-level goal expression which then passes it
+recursively down to sub-expressions. Encountering \texttt{fresh} adds
+a new logical variable to the substitution; \texttt{conj} will apply
+the first goal to the state passed in, and then apply the second goal
+to the states associated with each resulting steam finally unioning
+the results; \texttt{disj} will apply both goals to the same passed in
+state and concatenate the resulting steam; and \texttt{==} unifies its
+arguments in the context of the current state discarding any streams
+which fail to unify.
+
+To handle goal expressions that might diverge, the streams are
+expanded in an interleaving\cite{kiselyov2005backtracking} fashion
+giving each branch a chance to produce answers. This interleaving search
+is sound and complete\cite{rozplokhas2019certified}.
+
 \subsection{Grammar and Definitions}
 
 \begin{figure}
@@ -239,8 +258,8 @@ random variables $x$ and observed data $y$ can be defined as:
 \subsection{Sequential Importance Sampling}
 
 If we imagine running this program each execution trace can be seen as
-a sample from the distribution. If we then weight by their likelihood
-as we run them that collection execution traces will be an empirical
+a sample from the distribution. If we then weigh by their likelihood
+as we run them that collection of execution traces will be an empirical
 distribution of the given program. We call each of these execution traces
 particles and the below method is how we obtain them along with their weights $w$.
 
