@@ -124,15 +124,16 @@ To help explain how to use probKanren we introduce the following example:
 
 \begin{minted}{Scheme}
   (run 1000 (q)
+   (conj
     (normal 0 3 q)
-    (normal q 0 4))
+    (normal q 2 4))]
 \end{minted}
 
-\begin{minted}{Scheme}
-  (run 1000 (q)
-    (beta 1 1 q)
-    (bern q 1.0))
-\end{minted}
+%% \begin{minted}{Scheme}
+%%   (run 1000 (q)
+%%     (uniform 0 1 q)
+%%     (bern q 1.0))
+%% \end{minted}
 
 This probKanren program draws 1000 samples from a normal distribution truncated
 below 0.
@@ -162,8 +163,8 @@ is a pure logic programming language embedded in Scheme. The language
 consists of a set of terms, a set of goal primitives, and two run
 functions to answer queries in the language. The goal primitives
 consist of a \texttt{fresh} form for introducing logic variables, a
-unification primitive, a conjunction combinator, a disjunction
-combinator, and ways to define and use relations.
+unification primitive \texttt{==}, a conjunction combinator \texttt{conj}, a disjunction
+combinator \texttt{disj}, and ways to define and apply relations.
 
 \subsection{Grammar and Definitions}
 
@@ -183,7 +184,8 @@ combinator, and ways to define and use relations.
 
 <term-expr> ::= (quote <datum>) \alt
                 <lexical-var-ref> \alt
-                (cons <term-expr> <term-expr>)
+                (cons <term-expr> <term-expr>) \alt
+                <term>
 
 <term> ::= <number> \alt
            \#f | \#t \alt
@@ -194,8 +196,8 @@ combinator, and ways to define and use relations.
 \end{grammar}
 \end{figure}
 
-To create probkanren we extend this grammar with distribution clauses
-such as \texttt{normal} and \texttt{flip}. These are just another type
+To create \textsc{probKanren} we extend this grammar with distribution clauses
+such as \texttt{normal} and \texttt{bern}. These are just another type
 of goal expression. We do not need to add a notion of probabilistic
 variables as they can just be seen as logic variables constrained in
 a particular way.
@@ -295,6 +297,7 @@ to the microkanren search being complete, if we generate enough
 particles we are guaranteed to recover the true posterior as all paths
 of the search space will eventually be explored.
 
+\section{Semantics of probKanren}
 
 \section{Experiments}
 
