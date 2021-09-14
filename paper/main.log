@@ -1,4 +1,4 @@
-This is LuaTeX, Version 1.10.0 (TeX Live 2019/Debian)  (format=lualatex 2020.10.18)  16 AUG 2021 11:39
+This is LuaTeX, Version 1.10.0 (TeX Live 2019/Debian)  (format=lualatex 2020.10.18)  14 SEP 2021 18:21
  system commands enabled.
 **main.tex
 (./main.tex
@@ -2255,39 +2255,39 @@ Package auxhook Info: \AddLineBeginMainAux comes a little late,
 
 \openout8 = main.abs
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/b/n' will be
-(Font)              scaled to size 10.95pt on input line 83.
+(Font)              scaled to size 10.95pt on input line 87.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/b/n' will be
-(Font)              scaled to size 10.95pt on input line 83.
+(Font)              scaled to size 10.95pt on input line 87.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LibertinusSans' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 9.0pt on input line 83.
+(Font)              scaled to size 9.0pt on input line 87.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 17.28pt on input line 95.
+(Font)              scaled to size 17.28pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
-(Font)              scaled to size 17.28pt on input line 95.
+(Font)              scaled to size 17.28pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/b/n' will be
-(Font)              scaled to size 17.28pt on input line 95.
+(Font)              scaled to size 17.28pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 95.
+(Font)              scaled to size 12.0pt on input line 99.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LibertinusMath-Regular.otf' (encoding: TU).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(2)/m/n' will be
-(Font)              scaled to size 12.00128pt on input line 95.
+(Font)              scaled to size 12.00128pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(2)/m/n' will be
-(Font)              scaled to size 8.00085pt on input line 95.
+(Font)              scaled to size 8.00085pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(2)/m/n' will be
-(Font)              scaled to size 6.00064pt on input line 95.
+(Font)              scaled to size 6.00064pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 95.
+(Font)              scaled to size 11.99872pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(3)/m/n' will be
-(Font)              scaled to size 7.99915pt on input line 95.
+(Font)              scaled to size 7.99915pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 95.
+(Font)              scaled to size 5.99936pt on input line 99.
 
 (/usr/share/texlive/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
@@ -2296,35 +2296,35 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 8.0pt on input line 95.
+(Font)              scaled to size 8.0pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
-(Font)              scaled to size 8.0pt on input line 95.
+(Font)              scaled to size 8.0pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 14.4pt on input line 95.
+(Font)              scaled to size 14.4pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
-(Font)              scaled to size 9.0pt on input line 95.
+(Font)              scaled to size 9.0pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(2)/m/n' will be
-(Font)              scaled to size 9.00096pt on input line 95.
+(Font)              scaled to size 9.00096pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(2)/m/n' will be
-(Font)              scaled to size 5.00053pt on input line 95.
+(Font)              scaled to size 5.00053pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(3)/m/n' will be
-(Font)              scaled to size 8.99904pt on input line 95.
+(Font)              scaled to size 8.99904pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusMath-Regular.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 95.
+(Font)              scaled to size 4.99947pt on input line 99.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
-(Font)              scaled to size 6.0pt on input line 95.
+(Font)              scaled to size 6.0pt on input line 99.
  (./main.abs)
-Overfull \hbox (376.42744pt too wide) detected at line 95
+Overfull \hbox (376.42744pt too wide) detected at line 99
 []
  []
 
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 95.
+(Font)              scaled to size 6.0pt on input line 99.
 
-Package hyperref Warning: Ignoring empty anchor on input line 95.
+Package hyperref Warning: Ignoring empty anchor on input line 99.
 
 
-Package hyperref Warning: Ignoring empty anchor on input line 95.
+Package hyperref Warning: Ignoring empty anchor on input line 99.
 
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `fontawesomefree' (encoding: TU).
@@ -2433,7 +2433,7 @@ Package microtype Info: Character `textgreater ' is missing
 (microtype)             in font `TU/fontawesomefree/regular/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
 
-Package hyperref Warning: Ignoring empty anchor on input line 95.
+Package hyperref Warning: Ignoring empty anchor on input line 99.
 
 Package microtype Info: Character `,' is missing
 (microtype)             in font `TU/fontawesomefree/solid/n/9'.
@@ -2538,35 +2538,35 @@ Package microtype Info: Character `textgreater ' is missing
 (microtype)             in font `TU/fontawesomefree/solid/n/9'.
 (microtype)             Ignoring protrusion settings for this character.
 
-Package hyperref Warning: Ignoring empty anchor on input line 95.
+Package hyperref Warning: Ignoring empty anchor on input line 99.
 
 <cc-by.pdf, id=10, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
 <use cc-by.pdf>
-Package luatex.def Info: cc-by.pdf  used on input line 95.
+Package luatex.def Info: cc-by.pdf  used on input line 99.
 (luatex.def)             Requested size: 31.22595pt x 11.0pt.
 
-Package hyperref Warning: Ignoring empty anchor on input line 95.
+Package hyperref Warning: Ignoring empty anchor on input line 99.
 
 File: cc-by.pdf Graphic file (type pdf)
 <use cc-by.pdf>
-Package luatex.def Info: cc-by.pdf  used on input line 95.
+Package luatex.def Info: cc-by.pdf  used on input line 99.
 (luatex.def)             Requested size: 31.22595pt x 11.0pt.
 <ceur-ws-logo.pdf, id=14, 379.4175pt x 88.33pt>
 File: ceur-ws-logo.pdf Graphic file (type pdf)
 <use ceur-ws-logo.pdf>
-Package luatex.def Info: ceur-ws-logo.pdf  used on input line 95.
+Package luatex.def Info: ceur-ws-logo.pdf  used on input line 99.
 (luatex.def)             Requested size: 31.22595pt x 7.2687pt.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/m/n' will be
-(Font)              scaled to size 10.95pt on input line 97.
+(Font)              scaled to size 10.95pt on input line 101.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/b/n' will be
-(Font)              scaled to size 14.4pt on input line 97.
+(Font)              scaled to size 14.4pt on input line 101.
 LaTeX Font Info:    Font shape `TU/LibertinusSans(0)/b/n' will be
-(Font)              scaled to size 12.0pt on input line 115.
+(Font)              scaled to size 12.0pt on input line 119.
 
 \openout5 = main.pyg
 (./_minted-main/default-pyg-prefix.pygstyle) (./_minted-main/default.pygstyle)
-(./_minted-main/E39EB0C08C64B978E473FA1DA47C0B949C725C85FA156149AD5097902184534
+(./_minted-main/47F7516D9123873C23BB9083FFB577499C725C85FA156149AD5097902184534
 6.pygtex
 LaTeX Font Info:    Font shape `TU/LibertinusMono(0)/m/n' will be
 (Font)              scaled to size 9.49pt on input line 1.
@@ -2589,15 +2589,11 @@ LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/n' will be
  [1
 
 <./cc-by.pdf><./ceur-ws-logo.pdf>])
-\openout5 = main.pyg
-
-(./_minted-main/5BD7D0A228C8956D43D70A6F204995559C725C85FA156149AD5097902184534
-6.pygtex)
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/sc' will be
-(Font)              scaled to size 10.95pt on input line 154.
+(Font)              scaled to size 10.95pt on input line 161.
 LaTeX Font Info:    Font shape `TU/LibertinusSerif(0)/m/it' will be
-(Font)              scaled to size 10.0pt on input line 166.
- [2] [3] [4] (./main.bbl
+(Font)              scaled to size 10.0pt on input line 173.
+ [2] [3] [4] (./main.bbl [5]
 Underfull \hbox (badness 4779) in paragraph at lines 121--127
 []\TU/LibertinusSerif(0)/m/n/10.95 B. Paige, F. D. Wood, A. Doucet, Y. W. Teh, 
  Asyn-chronous any-time se-
@@ -2615,29 +2611,28 @@ Underfull \hbox (badness 5417) in paragraph at lines 121--127
 proceedings.neurips.cc/paper/2014/hash/
  []
 
-[5])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 383.
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 394.
  [6]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 383.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 394.
  (./main.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 383.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 383.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 394.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 394.
 Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
 runsystem(rm main.pyg)...executed
 )
 
 Here is how much of LuaTeX's memory you used:
- 36824 strings out of 481365
+ 36806 strings out of 481365
  100000,1373583 words of node,token memory allocated
  683 words of node memory still in use:
    7 hlist, 2 vlist, 3 rule, 7 glue, 4 kern, 1 glyph, 18 attribute, 68 glue_spec
 , 18 attribute_list, 1 write, 3 pdf_action nodes
-   avail lists: 1:1,2:1107,3:275,4:116,5:321,6:61,7:3961,8:113,9:341,10:17,11:27
-8
- 51806 multiletter control sequences out of 65536+600000
+   avail lists: 1:1,2:1057,3:209,4:97,5:321,6:59,7:3940,8:96,9:344,10:17,11:301
+ 51804 multiletter control sequences out of 65536+600000
  155 fonts using 47884363 bytes
- 82i,20n,140p,10119b,2311s stack positions out of 5000i,500n,10000p,200000b,100000s
+ 82i,20n,140p,10119b,2307s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/Libertinus
 Math-Regular.otf></usr/share/texlive/texmf-dist/fonts/opentype/public/libertinus
 -fonts/LibertinusSans-Regular.otf></usr/share/texlive/texmf-dist/fonts/opentype/
@@ -2651,9 +2646,9 @@ pentype/public/libertinus-fonts/LibertinusSerif-Italic.otf></usr/share/texlive/t
 exmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSerif-Regular.otf></u
 sr/share/texlive/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSan
 s-Bold.otf>
-Output written on main.pdf (6 pages, 152210 bytes).
+Output written on main.pdf (6 pages, 152416 bytes).
 
-PDF statistics: 238 PDF objects out of 1000 (max. 8388607)
- 37 named destinations out of 1000 (max. 131072)
- 158 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 240 PDF objects out of 1000 (max. 8388607)
+ 38 named destinations out of 1000 (max. 131072)
+ 166 words of extra memory for PDF output out of 10000 (max. 100000000)
 
