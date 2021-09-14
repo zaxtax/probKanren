@@ -21,6 +21,8 @@
 %% auto break lines
 \setminted{breaklines=true}
 
+\usepackage{cleveref}
+
 %%
 %% end of the preamble, start of the body of the document source.
 \begin{document}
@@ -163,13 +165,16 @@ is a pure logic programming language embedded in Scheme. The language
 consists of a set of terms, a set of goal primitives, and two run
 functions to answer queries in the language. The goal primitives
 consist of a \texttt{fresh} form for introducing logic variables, a
-unification primitive \texttt{==}, a conjunction combinator \texttt{conj}, a disjunction
-combinator \texttt{disj}, and ways to define and apply relations.
+unification primitive \texttt{==}, a conjunction combinator
+\texttt{conj}, a disjunction combinator \texttt{disj}, and ways to
+define and apply relations. Further forms are shown in detail in
+\Cref{fig:grammar}.
 
 \subsection{Grammar and Definitions}
 
 \begin{figure}
-\begin{grammar}
+  \centering
+  \begin{grammar}
 <prog> ::= (run <number> (<id>) <goal-expr>)
 
 <goal-expr> ::= (disj <goal-expr> <goal-expr>) \alt
@@ -193,7 +198,9 @@ combinator \texttt{disj}, and ways to define and apply relations.
 	   (<term> . <term>) \alt
 	   <logic-var>
 
-\end{grammar}
+  \end{grammar}
+  \caption{Grammar for \textsc{microKanren}}
+  \label{fig:grammar}
 \end{figure}
 
 To create \textsc{probKanren} we extend this grammar with distribution clauses
@@ -218,7 +225,7 @@ sequential monte carlo algorithms are the easiest.
 
 \subsection{Sequential Monte Carlo}
 
-Sequential Monte Carlo\cite{chopin2020introduction} are an efficient
+Sequential Monte Carlo\cite{chopin2020introduction}(SMC) is an efficient
 online way to sample from probabilistic models especially suited for
 state-space domains. If we imagine our probabilistic programs as
 straight-line programs with no control-flow we can imagine numbering
@@ -268,11 +275,13 @@ weights being relative to a global running average. % double-check this
 
 \section{Proposed Method}
 
-We propose to extend \textsc{microKanren} by augmenting each of the
-search streams with a set of particles. These particles represent the
+We propose to extend \textsc{microKanren} by turning the search into a
+SMC sampler. We accomplish this by augmenting each of the search
+streams with a set of particles. These particles represent the
 empirical distribution of that stream. Each particle has associated
 with it a substitution of all the logic and random variables as well
-as a weight that is proportional to the likelihood of the substitution.
+as a weight that is proportional to the likelihood of the
+substitution.
 
 An initial set of particles is created from the probabilistic program
 when it is first run. As disjunctions (\texttt{disj}) are encountered,
@@ -298,6 +307,11 @@ particles we are guaranteed to recover the true posterior as all paths
 of the search space will eventually be explored.
 
 \section{Semantics of probKanren}
+
+We follow the semantics of \cite{staton2016semantics}, where each
+language form has a denotational semantics that associates a
+measurable function with each form, and an operational semantics that associates
+a sampler with each form.
 
 \section{Experiments}
 
