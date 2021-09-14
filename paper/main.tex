@@ -64,16 +64,20 @@ url=http://webyrd.net/,
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-  Probabilistic programming is sometimes described as a generalisation
+  Probabilistic programming can be conceptually seen as generalisation
   of logic programming where instead of just returning a set of
   answers to a given query, we also return a probability distribution
   over those answers. But many contemporary probabilistic logic
-  programming languages are not implemented as simple extensions of
+  programming languages implementations are not simple extensions of
   existing logic programming languages but instead involve their own
   unique implementations. Here we introduce probKanren, a simple
   extension to microKanren that transforms it into a probabilistic
   programming language without needing to make any modifications to
-  the underlying search.
+  the underlying logic language's search. We use several illustrative
+  examples from the probabilistic programming and program synthesis
+  literature to demonstrate the practicality of the approach.
+
+  
 \end{abstract}
 
 %%
@@ -116,16 +120,18 @@ becomes a probabilistic programming language.
 
 To help explain how to use probKanren we introduce the following example:
 
+%TODO: Examples should use the grammar defined in the paper
+
 \begin{minted}{Scheme}
   (run 1000 (q)
     (normal 0 3 q)
-    (greatero q 0))
+    (normal q 0 4))
 \end{minted}
 
 \begin{minted}{Scheme}
   (run 1000 (q)
     (beta 1 1 q)
-    (flip q #t))
+    (bern q 1.0))
 \end{minted}
 
 This probKanren program draws 1000 samples from a normal distribution truncated
@@ -214,7 +220,7 @@ Sequential Monte Carlo\cite{chopin2020introduction} are an efficient
 online way to sample from probabilistic models especially suited for
 state-space domains. If we imagine our probabilistic programs as
 straight-line programs with no control-flow we can imagine numbering
-every sample function $x_1, f_2, \ldots, f_n$ and every observe
+every sample function $f_1, f_2, \ldots, f_n$ and every observe
 function $g_1, g_2, \ldots, g_n$ then our probability density over our
 random variables $x$ and observed data $y$ can be defined as:
 
@@ -232,7 +238,7 @@ particles and the below method is how we obtain them along with their weights $w
 
 \begin{eqnarray}
   x_n &\sim& f(x_n \mid x_{0:n-1}) \\
-  w_n^{(k)} &=& \frac{g(x_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
+  w_n^{(k)} &=& \frac{g(y_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
   W_n^{(k)} &=& W_{n-1}^{(k)} w_n^{(k)}
 \end{eqnarray}
 
