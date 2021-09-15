@@ -137,7 +137,11 @@ To help explain how to use probKanren we introduce the following example:
 %%     (bern q 1.0))
 %% \end{minted}
 
-This probKanren program draws 1000 samples from a conditional normal distribution.
+In the above program, we have a probabilistic model for the Gaussian
+unknown mean problem. We observe a value 4 from the $\mathcal{N}(q,2)$
+distribution, and that $q$ has a prior distribution of $\mathcal{N}(0, 3)$.
+This \textsc{probKanren} program draws 1000 samples from a conditional normal distribution
+that represents the posterior probability distribution associated with $q$.
 
 \section{Related Work}
 
@@ -221,12 +225,22 @@ is sound and complete\cite{rozplokhas2019certified}.
   \label{fig:grammar}
 \end{figure}
 
-To create \textsc{probKanren} we extend this grammar with distribution clauses
-such as \texttt{normal} and \texttt{bern}. These are just another type
-of goal expression. We do not need to add a notion of probabilistic
-variables as they can just be seen as logic variables constrained in
-a particular way.
+To create \textsc{probKanren} we extend this grammar with distribution
+clauses such as \texttt{normal} and \texttt{bern}. Distribution clauses
+take as arguments the parameters of the distribution and a last argument
+representing a draw from that distribution. For example, in \texttt{(normal 0 1 x)}
+means \texttt{x} represents a draw from $\mathcal{N}(0,1)$ distribution.
 
+These are just another type of goal expression. We do not need to add
+a notion of probabilistic variables to the language as they can
+treated as logic variables constrained in a particular way. The
+semantics of the language though does change from a set of answers to
+a query to a probability distribution of answers to a query.
+
+We follow the semantics of \cite{staton2016semantics}, where each
+language form has a denotational semantics that associates a
+measurable function with each form, and an operational semantics that associates
+a sampler with each form.
 
 \subsection{Probabilistic Programming}
 
@@ -249,29 +263,62 @@ state-space domains. If we imagine our probabilistic programs as
 straight-line programs with no control-flow we can imagine numbering
 every sample function $f_1, f_2, \ldots, f_n$ and every observe
 function $g_1, g_2, \ldots, g_n$ then our probability density over our
-random variables $x$ and observed data $y$ can be defined as:
+random variables $x_{0:T}$ and observed data $y_{0:T}$ can be defined as:
 
 \begin{equation}
-  p(x, y) = \prod_i f(x_i \mid x_{0:n-1})g(y_i \mid x_{0:n})
+  p(x_{0:T}, y_{0:T}) = p(x_0)\prod_{t=1}^T f_t(x_t \mid x_{t-1})\prod_{t=0}^T g_t(y_t \mid x_t)
 \end{equation}
 
 \subsection{Sequential Importance Sampling}
 
-If we imagine running this program each execution trace can be seen as
-a sample from the distribution. If we then weigh by their likelihood
-as we run them that collection of execution traces will be an empirical
-distribution of the given program. We call each of these execution traces
-particles and the below method is how we obtain them along with their weights $w$.
+The simplest way to sample from our target distribution $p(x_{0:T}
+\mid y_{0:T})$ is to samples from a sequence of intermediary
+distributions $p(x_{0:t} \mid y_{0:t})$ where $t$ goes from $1$ to
+$T$. We do this by sampling a population of $N$ particles
+$\{x^{(1)}_t, \ldots, x^{(i)}_t, \ldots x^{(N)}_t\}$ from a proposal
+distribution $q(x_t \mid x_{0:t-1}, y_{0:t})$, which when combined
+with a set of importance weights $\{w^{(1)}_t, \ldots, w^{(i)}_t,
+\ldots w^{(N)}_t\}$ lets us approximate each intermediary
+distribution.
 
-\begin{eqnarray}
-  x_n &\sim& f(x_n \mid x_{0:n-1}) \\
-  w_n^{(k)} &=& \frac{g(y_n \mid x_{0:n})f(x_n \mid x_{0:n-1})}{q(x_n \mid x_{0:n-1})} \\
-  W_n^{(k)} &=& W_{n-1}^{(k)} w_n^{(k)}
-\end{eqnarray}
+Thanks to the recurrence relation
 
-The weights are then normalised at the end to make a proper probability distribution.
+\begin{equation}
+p(x_{0:t} \mid y_{0:t}) = p(x_{0:t-1} \mid y_{0:t-1}) \frac{f_t(x_t \mid x_{t-1}) g_t(y_t \mid x_t)}{p(y_t \mid y_{0:t-1})}
+\end{equation}
+
+We know in $T$ rounds we compute the desired distribution as follows:
+
+Initialise with:
+
+\begin{align*}
+x_0^{(i)} &\sim p(x_0) \\
+w_0^{(i)} &= 1/N
+\end{align*}
+
+Then for $t$ from $1$ to $T$
+
+\begin{align*}
+  x_t^{(i)} &\sim q(x_t \mid x^{(i)}_{0:t-1}) \\
+  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{g(y_t \mid x^{(i)}_t)f(x^{(i)}_t \mid x^{(i)}_{t-1})}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
+\end{align*}
+
+We get the best results if $q(x_t \mid x_{0:t-1})$ is equal to $p(x_t \mid x_{0:t-1}, y_{0:t})$.
 
 \subsection{Sequential Importance Resampling}
+
+Unfortunately, SIS is likely to over time lead to most of the weight
+in a small fraction of the particles with the rest of the particles
+having negligible weight. This is sometimes called \emph{weight degeneracy}. We
+address this by replicating the particles with high weight and
+dropping the ones with low weight. This is called a resampling step,
+and it happens after each round.
+
+\begin{align*}
+  a_t^{(i)} &\sim r(w_{t-1}^{(1:N)}) \\
+  x_t^{(i)} &\sim q(x_t \mid x^{(a_t^{(i)})}_{0:t-1}) \\
+  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{g(y_t \mid x^{(i)}_t)f(x^{(i)}_t \mid x^{(i)}_{t-1})}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
+\end{align*}
 
 The problem with the above algorithm is over time for many particles
 $W_k$ is going to become low and that particle will stop being very
@@ -286,10 +333,12 @@ suggests all of them are helpful to reduce particle degeneracy.
 
 \subsection{Particle Cascade}
 
-As the SMC resampling step was defined in the previous section
-Particle Cascades \cite{PaigeWDT14} remove this barrier allowing
-every particle to be resampled asynchronously with the associated
-weights being relative to a global running average. % double-check this
+Unfortunately, SMC as defined here requires having access to all the
+particles at every step in the process. This conflicts with the
+functional nature of our implementation. Instead we make use of
+Particle Cascades \cite{PaigeWDT14}, remove this barrier allowing every
+particle to be resampled asynchronously with the associated weights
+being relative to a global running average. % double-check this
 
 \section{Proposed Method}
 
@@ -301,16 +350,6 @@ with it a substitution of all the logic and random variables as well
 as a weight that is proportional to the likelihood of the
 substitution.
 
-An initial set of particles is created from the probabilistic program
-when it is first run. As disjunctions (\texttt{disj}) are encountered,
-we split evenly the number of particles allocated to each stream. Whenever
-we encounter a unification primitive, we run a resampling step. This
-helps to prune low-weight particles and replicate high weight ones.
-
-As an optimisation we may create more particles during resampling
-based on a globally stored a counter of the effective sample size of
-all particles across all streams.
-
 We follow \cite{gutmann2010extending} and place the following restrictions
 on our distribution clauses and the random variables they specify.
 
@@ -318,18 +357,29 @@ Firstly, the arguments of distribution clauses must be
 ground. Secondly, a random variable cannot unify with any arithmetic
 expression.
 
+An initial set of particles is created from the probabilistic program
+when it is first run. When primitives such as \texttt{normal} we first
+check is all the parameter terms are grounded and then if the last
+argument is fresh, we sample a value for it for each particle and then
+add this sampled value along with the associated logic variable to the
+substitution associated with that particle. If all the terms are ground,
+we treat the primitive like an observation statement and multiply the
+weights of each substitution with the likelihood of the observation.
+
+As disjunctions (\texttt{disj}) are encountered, we split evenly the
+number of particles allocated to each stream. Whenever we encounter a
+unification primitive, we run a resampling step. This helps to prune
+low-weight particles and replicate high weight ones.
+
+As an optimisation we may create more particles during resampling
+based on a globally stored a counter of the effective sample size of
+all particles across all streams.
+
 This extension does not modify the search and streams are managed
 exactly as in microkanren. An additional advantage of this is thanks
 to the microkanren search being complete, if we generate enough
 particles we are guaranteed to recover the true posterior as all paths
 of the search space will eventually be explored.
-
-\section{Semantics of probKanren}
-
-We follow the semantics of \cite{staton2016semantics}, where each
-language form has a denotational semantics that associates a
-measurable function with each form, and an operational semantics that associates
-a sampler with each form.
 
 \section{Experiments}
 

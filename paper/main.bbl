@@ -102,6 +102,20 @@
   Relational Programming Workshop}, \bibinfo{year}{2019}, pp.
   \bibinfo{pages}{80--98}.
 %Type = Inproceedings
+\bibitem[{Staton et~al.(2016)Staton, Yang, Wood, Heunen, and
+  Kammar}]{staton2016semantics}
+\bibinfo{author}{S.~Staton}, \bibinfo{author}{H.~Yang},
+  \bibinfo{author}{F.~Wood}, \bibinfo{author}{C.~Heunen},
+  \bibinfo{author}{O.~Kammar},
+\newblock \bibinfo{title}{Semantics for probabilistic programming: Higher-order
+  functions, continuous distributions, and soft constraints},
+\newblock in: \bibinfo{booktitle}{Proceedings of the 31st Annual ACM/IEEE
+  Symposium on Logic in Computer Science}, \bibinfo{publisher}{Association for
+  Computing Machinery}, \bibinfo{address}{New York, NY, USA},
+  \bibinfo{year}{2016}, p. \bibinfo{pages}{525–534}. \URLprefix
+  \url{https://doi.org/10.1145/2933575.2935313}.
+  \DOIprefix\doi{10.1145/2933575.2935313}.
+%Type = Inproceedings
 \bibitem[{Wood et~al.(2014)Wood, Meent, and Mansinghka}]{wood2014new}
 \bibinfo{author}{F.~Wood}, \bibinfo{author}{J.~W. Meent},
   \bibinfo{author}{V.~Mansinghka},
@@ -117,7 +131,7 @@
   \bibinfo{author}{H.~Yang}, \bibinfo{author}{F.~Wood},
 \newblock \bibinfo{title}{An introduction to probabilistic programming},
 \newblock \bibinfo{journal}{CoRR} \bibinfo{volume}{abs/1809.10756}
-  (\bibinfo{year}{2018}). \URLprefix \url{http://arxiv.org/abs/1809.10756}.
+  (\bibinfo{year}{2018}).
 %Type = Book
 \bibitem[{Chopin et~al.(2020)Chopin, Papaspiliopoulos
   et~al.}]{chopin2020introduction}
@@ -140,21 +154,6 @@
   \bibinfo{author}{A.~Doucet}, \bibinfo{author}{Y.~W. Teh},
 \newblock \bibinfo{title}{Asynchronous anytime sequential monte carlo},
 \newblock in: \bibinfo{booktitle}{Advances in Neural Information Processing
-  Systems}, \bibinfo{year}{2014}, pp. \bibinfo{pages}{3410--3418}. \URLprefix
-  \url{https://proceedings.neurips.cc/paper/2014/hash/7eb7eabbe9bd03c2fc99881d04da9cbd-Abstract.html}.
-%Type = Inproceedings
-\bibitem[{Staton et~al.(2016)Staton, Yang, Wood, Heunen, and
-  Kammar}]{staton2016semantics}
-\bibinfo{author}{S.~Staton}, \bibinfo{author}{H.~Yang},
-  \bibinfo{author}{F.~Wood}, \bibinfo{author}{C.~Heunen},
-  \bibinfo{author}{O.~Kammar},
-\newblock \bibinfo{title}{Semantics for probabilistic programming: Higher-order
-  functions, continuous distributions, and soft constraints},
-\newblock in: \bibinfo{booktitle}{Proceedings of the 31st Annual ACM/IEEE
-  Symposium on Logic in Computer Science}, \bibinfo{publisher}{Association for
-  Computing Machinery}, \bibinfo{address}{New York, NY, USA},
-  \bibinfo{year}{2016}, p. \bibinfo{pages}{525–534}. \URLprefix
-  \url{https://doi.org/10.1145/2933575.2935313}.
-  \DOIprefix\doi{10.1145/2933575.2935313}.
+  Systems}, \bibinfo{year}{2014}, pp. \bibinfo{pages}{3410--3418}.
 
 \end{thebibliography}
