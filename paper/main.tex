@@ -71,7 +71,7 @@ url=http://webyrd.net/,
   over those answers. But many contemporary probabilistic logic
   programming languages implementations are not simple extensions of
   existing logic programming languages but instead involve their own
-  unique implementations. Here we introduce probKanren, a simple
+  unique implementations. Here we introduce \textsc{probKanren}, a simple
   extension to microKanren that transforms it into a probabilistic
   programming language without needing to make any modifications to
   the underlying logic language's search. We use several illustrative
@@ -107,19 +107,21 @@ that satisfy a set of logical constraints. A natural generalisation
 to this domain is adding a notion of uncertainty to this set of answers
 by associating with them a probability distribution.
 
-But the conceptual simplicity of this sort of generalisation is not reflected
-in the complexity of many existing probabilistic logic programming systems.
-They often involve making implementing sophisticated algorithms and the underlying
-systems are not just implemented on top of existing logic programming systems.
+But the conceptual simplicity of this sort of generalisation is not
+reflected in the complexity of many existing probabilistic logic
+programming systems.  They often involve making implementing
+sophisticated inference algorithms and the underlying systems are not
+just implemented on top of existing logic programming systems.
 
-We believe a conceptually simple extension deserves a conceptually
-simple implementation to go along with it. We thus contribute a simple
-way to extend microkanren a small logic programming DSL such that it
-becomes a probabilistic programming language.
+We believe that a conceptually simple extension deserves a
+conceptually simple implementation to go along with it. We thus
+contribute a simple way to extend microkanren a small logic
+programming domain-specific language such that it becomes a
+probabilistic programming language.
 
 \subsection{Illustrated Example}
 
-To help explain how to use probKanren we introduce the following example:
+To help explain how to use \textsc{probKanren} we introduce the following example:
 
 %TODO: Examples should use the grammar defined in the paper
 
@@ -127,7 +129,7 @@ To help explain how to use probKanren we introduce the following example:
   (run 1000 (q)
    (conj
     (normal 0 3 q)
-    (normal q 2 4))]
+    (normal q 2 4)))
 \end{minted}
 
 %% \begin{minted}{Scheme}
@@ -148,15 +150,16 @@ There is a rich history of extending logic programming formalisms to
 support probabilistic inference. Early systems like
 PRISM\cite{sato1997prism} and ProbLog\cite{de2007problog} allowed
 associating discrete distributions with facts. Early versions of
-ProbLog were also built on top of Prolog matching one of the goals of
+ProbLog were also built on top of Prolog, matching one of the goals of
 our work. Later work\cite{gutmann2010extending} introduces
-distribution clauses so that some continuous distributions. Other work
-extended these methods further while focusing on efficient exact
-inference algorithms like model weight
-integration\cite{islam2012inference, belle2015probabilistic}. Our work
-is most similar to \cite{gutmann2011magic} except that while they
-combine their forward reasoning with an importance sampler we use a
-particle cascade instead which can be more sample efficient.
+distribution clauses so that some continuous distributions like
+Gaussians can be represented. Other work extended these methods
+further while focusing on efficient exact inference algorithms like
+weighted model integration\cite{islam2012inference,
+  belle2015probabilistic}. Our work is most similar to
+\cite{gutmann2011magic}, except that while they combine their forward
+reasoning with an importance sampler we use a particle cascade instead
+which can be more sample efficient.
 
 \section{Background}
 
@@ -165,7 +168,7 @@ particle cascade instead which can be more sample efficient.
 \textsc{microKanren}\cite{10.1145/2989225.2989230, daniel2018reasoned}
 is a pure logic programming language embedded in Scheme. The language
 consists of a set of terms, a set of goal primitives, and two run
-functions to answer queries in the language. The goal primitives
+functions that execute queries in the language. The goal primitives
 consist of a \texttt{fresh} form for introducing logic variables, a
 unification primitive \texttt{==}, a conjunction combinator
 \texttt{conj}, a disjunction combinator \texttt{disj}, and ways to
@@ -180,14 +183,14 @@ passing it into the top-level goal expression which then passes it
 recursively down to sub-expressions. Encountering \texttt{fresh} adds
 a new logical variable to the substitution; \texttt{conj} will apply
 the first goal to the state passed in, and then apply the second goal
-to the states associated with each resulting steam finally unioning
-the results; \texttt{disj} will apply both goals to the same passed in
-state and concatenate the resulting steam; and \texttt{==} unifies its
-arguments in the context of the current state discarding any streams
-which fail to unify.
+to the states associated with each resulting stream from the first
+goal and finally unify the results; \texttt{disj} will apply both
+goals to the same input state and concatenate the resulting streams;
+and \texttt{==} unifies its arguments in the context of the current
+state, discarding any streams which fail to unify.
 
 To handle goal expressions that might diverge, the streams are
-expanded in an interleaving\cite{kiselyov2005backtracking} fashion
+expanded in an interleaving\cite{kiselyov2005backtracking} fashion,
 giving each branch a chance to produce answers. This interleaving search
 is sound and complete\cite{rozplokhas2019certified}.
 
@@ -224,45 +227,43 @@ is sound and complete\cite{rozplokhas2019certified}.
   \label{fig:grammar}
 \end{figure}
 
-To create \textsc{probKanren} we extend this grammar with distribution
+To create \textsc{probKanren}, we extend this grammar with distribution
 clauses such as \texttt{normal} and \texttt{bern}. Distribution clauses
 take as arguments the parameters of the distribution and a last argument
 representing a draw from that distribution. For example, in \texttt{(normal 0 1 x)}
-means \texttt{x} represents a draw from $\mathcal{N}(0,1)$ distribution.
+means \texttt{x} represents a draw from the $\mathcal{N}(0,1)$ distribution.
 
 These are just another type of goal expression. We do not need to add
-a notion of probabilistic variables to the language as they can
-treated as logic variables constrained in a particular way. The
-semantics of the language though does change from a set of answers to
-a query to a probability distribution of answers to a query.
+a notion of probabilistic variables to the language grammar, as they
+can treated as logic variables constrained in a particular way. The
+semantics of the language though does change from an answer set to a
+probability distribution on that answer set.
 
 We follow the semantics of \cite{staton2016semantics}, where each
-language form has a denotational semantics that associates a
-measurable function with each form, and an operational semantics that associates
-a sampler with each form.
+language form has the denotational semantics that a
+measurable function, and an operational semantics of a sampler.
 
 \subsection{Probabilistic Programming}
 
 Probabilistic Programming Languages\cite{wood2014new,
-  van2018introduction} are a family of domain specific languages for
+  van2018introduction} are a family of domain-specific languages for
 posing and efficiently solving probabilistic modelling problems. At
-their core, all have a way to \texttt{sample} from a probability
-distribution and \texttt{observe} data generated from a probability
-distribution.
+their core, all have a way to \texttt{sample} and \texttt{observe}
+data under a probability distribution or Markov kernel.
 
-There are many ways to implement inference algorithms for probabilistic
-programming languages but methods based on likelihood-weighting and
-sequential monte carlo algorithms are the easiest.
+There are many ways to inference algorithms for probabilistic
+programming languages, but methods based on likelihood-weighting and
+Sequential Monte Carlo algorithms are the simplest to implement.
 
 \subsection{Sequential Monte Carlo}
 
 Sequential Monte Carlo\cite{chopin2020introduction}(SMC) is an efficient
-online way to sample from probabilistic models especially suited for
+online way to sample from probabilistic models, which is especially suited for
 state-space domains. If we imagine our probabilistic programs as
 straight-line programs with no control-flow we can imagine numbering
 every sample function $f_1, f_2, \ldots, f_n$ and every observe
 function $g_1, g_2, \ldots, g_n$ then our probability density over our
-random variables $x_{0:T}$ and observed data $y_{0:T}$ can be defined as:
+latent variables $x_{0:T}$ and observed data $y_{0:T}$ can be defined as:
 
 \begin{equation}
   p(x_{0:T}, y_{0:T}) = p(x_0)\prod_{t=1}^T f_t(x_t \mid x_{t-1})\prod_{t=0}^T g_t(y_t \mid x_t)
@@ -271,7 +272,7 @@ random variables $x_{0:T}$ and observed data $y_{0:T}$ can be defined as:
 \subsection{Sequential Importance Sampling}
 
 The simplest way to sample from our target distribution $p(x_{0:T}
-\mid y_{0:T})$ is to samples from a sequence of intermediary
+\mid y_{0:T})$ is to sample from a sequence of intermediary
 distributions $p(x_{0:t} \mid y_{0:t})$ where $t$ goes from $1$ to
 $T$. We do this by sampling a population of $N$ particles
 $\{x^{(1)}_t, \ldots, x^{(i)}_t, \ldots x^{(N)}_t\}$ from a proposal
@@ -280,7 +281,7 @@ with a set of importance weights $\{w^{(1)}_t, \ldots, w^{(i)}_t,
 \ldots w^{(N)}_t\}$ lets us approximate each intermediary
 distribution.
 
-Thanks to the recurrence relation
+Thanks to the recurrence relation:
 
 \begin{equation}
 p(x_{0:t} \mid y_{0:t}) = p(x_{0:t-1} \mid y_{0:t-1}) \frac{f_t(x_t \mid x_{t-1}) g_t(y_t \mid x_t)}{p(y_t \mid y_{0:t-1})}
@@ -290,57 +291,55 @@ We know in $T$ rounds we compute the desired distribution as follows:
 
 Initialise with:
 
-\begin{align*}
+\begin{align}
 x_0^{(i)} &\sim p(x_0) \\
 w_0^{(i)} &= 1/N
-\end{align*}
+\end{align}
 
 Then for $t$ from $1$ to $T$
 
-\begin{align*}
+\begin{align}
   x_t^{(i)} &\sim q(x_t \mid x^{(i)}_{0:t-1}) \\
-  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{g(y_t \mid x^{(i)}_t)f(x^{(i)}_t \mid x^{(i)}_{t-1})}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
-\end{align*}
+  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{f(x^{(i)}_t \mid x^{(i)}_{t-1})g(y_t \mid x^{(i)}_t)}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
+\end{align}
 
 We get the best results if $q(x_t \mid x_{0:t-1})$ is equal to $p(x_t \mid x_{0:t-1}, y_{0:t})$.
 
 \subsection{Sequential Importance Resampling}
 
-Unfortunately, SIS is likely to over time lead to most of the weight
-in a small fraction of the particles with the rest of the particles
-having negligible weight. This is sometimes called \emph{weight degeneracy}. We
-address this by replicating the particles with high weight and
+Unfortunately, over time SIS is likely to lead to most of the
+importance weight in a small fraction of the particles, with the rest
+of the particles having negligible weight. This is usually called
+\emph{weight degeneracy}. We address this sample efficiency issue in
+the standard way by replicating the particles with high weight and
 dropping the ones with low weight. This is called a resampling step,
-and it happens after each round.
+and it happens after each round. Resampling effectively removes
+particles with low weight and duplicates particles with higher weight
+by sampling with replacement our existing particles.
 
 \begin{align*}
   a_t^{(i)} &\sim r(w_{t-1}^{(1:N)}) \\
   x_t^{(i)} &\sim q(x_t \mid x^{(a_t^{(i)})}_{0:t-1}) \\
-  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{g(y_t \mid x^{(i)}_t)f(x^{(i)}_t \mid x^{(i)}_{t-1})}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
+  w_t^{(i)} &\propto w_{t-1}^{(i)} \frac{f(x^{(i)}_t \mid x^{(i)}_{t-1})g(y_t \mid x^{(i)}_t)}{q(x^{(i)}_t \mid x^{(i)}_{0:t-1})}
 \end{align*}
 
-The problem with the above algorithm is over time for many particles
-$W_k$ is going to become low and that particle will stop being very
-informative of the underlying distribution. To mitigate this issue,
-each time we encounter an observation we resample our particles. Resampling
-effectively removes particles with low weight and duplicates particles
-with higher weight by sampling with replacement our existing particles.
-
-We set $r(w) = \text{Categorical}(w)$, which is called multinomial resampling but there are other methods
-as well\cite{douc2005comparison}.
+For each particle $i$, resampling tells us which of the existing
+particles $a_i$ will be its ancestor. We set $r(w) =
+\text{Categorical}(w)$, which is called multinomial resampling but
+there are other methods as well\cite{douc2005comparison}.
 
 \subsection{Particle Cascade}
 
 Unfortunately, SMC as defined here requires having access to all the
 particles at every step in the process. This conflicts with the
 functional nature of our implementation. Instead we make use of
-Particle Cascades \cite{PaigeWDT14}, remove this barrier allowing every
+Particle Cascades \cite{PaigeWDT14}, removing this barrier allowing every
 particle to be resampled asynchronously with the associated weights
 being relative to a global running average. % double-check this
 
 \section{Proposed Method}
 
-We propose to extend \textsc{microKanren} by turning the search into a
+We propose to extend \textsc{microKanren} by turning the search into an
 SMC sampler. We accomplish this by augmenting each of the search
 streams with a set of particles. These particles represent the
 empirical distribution of that stream. Each particle has associated
@@ -352,36 +351,41 @@ We follow \cite{gutmann2010extending} and place the following restrictions
 on our distribution clauses and the random variables they specify.
 
 Firstly, the arguments of distribution clauses must be
-ground. Secondly, a random variable cannot unify with any arithmetic
+grounded. Secondly, a random variable cannot unify with any arithmetic
 expression.
 
 An initial set of particles is created from the probabilistic program
-when it is first run. When primitives such as \texttt{normal} we first
-check is all the parameter terms are grounded and then if the last
-argument is fresh, we sample a value for it for each particle and then
-add this sampled value along with the associated logic variable to the
-substitution associated with that particle. If all the terms are ground,
-we treat the primitive like an observation statement and multiply the
-weights of each substitution with the likelihood of the observation.
+when it is first run. When encountering primitives such as
+\texttt{normal} we first check if all the parameter terms are grounded
+and then if the last argument is fresh, we sample a value for it for
+each particle and then add this sampled value along with the
+associated logic variable to the substitution associated with that
+particle. If all the terms are ground, we treat the primitive like an
+observation statement and multiply the weights of each substitution
+with the likelihood of the observation.
+
+As conjunctions (\texttt{conj}) are encountered, all particles in all
+output streams from the first goal become part of the initial states
+that are each passed to the second goal.
 
 As disjunctions (\texttt{disj}) are encountered, we split evenly the
 number of particles allocated to each stream. Whenever we encounter a
 unification primitive, we run a resampling step. This helps to prune
-low-weight particles and replicate high weight ones.
+particles with low weight and replicate particles with high weight.
 
-As an optimisation we may create more particles during resampling
-based on a globally stored a counter of the effective sample size of
+As an optimisation, we may create more particles during resampling
+based on a globally stored counter of the effective sample size of
 all particles across all streams.
 
 This extension does not modify the search and streams are managed
-exactly as in microkanren. An additional advantage of this is thanks
-to the microkanren search being complete, if we generate enough
-particles we are guaranteed to recover the true posterior as all paths
-of the search space will eventually be explored.
+exactly as in \textsc{microKanren}. An additional advantage, due to
+the completeness of the \text{microKanren} search being complete, is
+that we are guaranteed to recover the true posterior as all paths of
+the search space will eventually be explored given enough particles.
 
 \section{Experiments}
 
-We validate that probKanren is at least as expressive as other probabilistic
+We validate that \textsc{probKanren} is at least as expressive as other probabilistic
 logic programming languages by implementing the Friends who Smoke model.
 
 Friends who Smoke is a probabilistic logic program which models the
@@ -406,11 +410,11 @@ match up with the discrete distribution returned from ProbLog.
 \section{Conclusions}
 
 We made a simple to implement extension to \textsc{microKanren} that
-let's us support probabilistic inference on both discrete and
+lets us support probabilistic inference on both discrete and
 continuous distributions. The approach does not require modifying the
-underlying search algorithm or touch any of the backtracking code and
+underlying search algorithm or touching any of the backtracking code and
 comes with a theoretical guarantee that if the underlying search is
-complete then the probabilistic extension will require the true
+complete then the probabilistic extension will recover the true
 posterior given enough particles.
 
 %% \begin{table*}

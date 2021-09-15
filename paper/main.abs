@@ -4,7 +4,7 @@ Probabilistic programming can be conceptually seen as generalisation
   over those answers. But many contemporary probabilistic logic
   programming languages implementations are not simple extensions of
   existing logic programming languages but instead involve their own
-  unique implementations. Here we introduce probKanren, a simple
+  unique implementations. Here we introduce \textsc{probKanren}, a simple
   extension to microKanren that transforms it into a probabilistic
   programming language without needing to make any modifications to
   the underlying logic language's search. We use several illustrative
