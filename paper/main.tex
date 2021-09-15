@@ -327,9 +327,8 @@ each time we encounter an observation we resample our particles. Resampling
 effectively removes particles with low weight and duplicates particles
 with higher weight by sampling with replacement our existing particles.
 
-The above is called multinomial resampling but there are other methods
-as well. A survey\cite{douc2005comparison} of resampling methods
-suggests all of them are helpful to reduce particle degeneracy.
+We set $r(w) = \text{Categorical}(w)$, which is called multinomial resampling but there are other methods
+as well\cite{douc2005comparison}.
 
 \subsection{Particle Cascade}
 
