@@ -109,13 +109,13 @@ by associating with them a probability distribution.
 
 But the conceptual simplicity of this sort of generalisation is not
 reflected in the complexity of many existing probabilistic logic
-programming systems.  They often involve making implementing
-sophisticated inference algorithms and the underlying systems are not
-just implemented on top of existing logic programming systems.
+programming systems.  They often involve implementing sophisticated
+inference algorithms and the underlying systems are not just
+implemented on top of existing logic programming systems.
 
 We believe that a conceptually simple extension deserves a
 conceptually simple implementation to go along with it. We thus
-contribute a simple way to extend microkanren a small logic
+contribute a simple way to extend \textsc{microKanren}, a small logic
 programming domain-specific language such that it becomes a
 probabilistic programming language.
 
@@ -168,7 +168,7 @@ which can be more sample efficient.
 \textsc{microKanren}\cite{10.1145/2989225.2989230, daniel2018reasoned}
 is a pure logic programming language embedded in Scheme. The language
 consists of a set of terms, a set of goal primitives, and two run
-functions that execute queries in the language. The goal primitives
+forms that turn goal queries into a set of answers. The goal primitives
 consist of a \texttt{fresh} form for introducing logic variables, a
 unification primitive \texttt{==}, a conjunction combinator
 \texttt{conj}, a disjunction combinator \texttt{disj}, and ways to
@@ -180,14 +180,15 @@ procedure. These goals all take as input some state and output a
 stream of possible output states. We run these goals by starting with
 an initial state that holds an empty substitution dictionary, and
 passing it into the top-level goal expression which then passes it
-recursively down to sub-expressions. Encountering \texttt{fresh} adds
-a new logical variable to the substitution; \texttt{conj} will apply
-the first goal to the state passed in, and then apply the second goal
-to the states associated with each resulting stream from the first
-goal and finally unify the results; \texttt{disj} will apply both
-goals to the same input state and concatenate the resulting streams;
-and \texttt{==} unifies its arguments in the context of the current
-state, discarding any streams which fail to unify.
+recursively down to sub-expressions. Encountering \texttt{fresh}
+extends the lexical environment with a binding between a lexical
+variable and a logic variable; \texttt{conj} will apply the first goal
+to the state passed in, and then apply the second goal to the states
+associated with each resulting stream from the first goal and finally
+unify the results; \texttt{disj} will apply both goals to the same
+input state and concatenate the resulting streams; and \texttt{==}
+unifies its arguments in the context of the current state, discarding
+any streams which fail to unify.
 
 To handle goal expressions that might diverge, the streams are
 expanded in an interleaving\cite{kiselyov2005backtracking} fashion,
@@ -230,7 +231,7 @@ is sound and complete\cite{rozplokhas2019certified}.
 To create \textsc{probKanren}, we extend this grammar with distribution
 clauses such as \texttt{normal} and \texttt{bern}. Distribution clauses
 take as arguments the parameters of the distribution and a last argument
-representing a draw from that distribution. For example, in \texttt{(normal 0 1 x)}
+representing a draw from that distribution. For example, \texttt{(normal 0 1 x)}
 means \texttt{x} represents a draw from the $\mathcal{N}(0,1)$ distribution.
 
 These are just another type of goal expression. We do not need to add
@@ -239,8 +240,8 @@ can treated as logic variables constrained in a particular way. The
 semantics of the language though does change from an answer set to a
 probability distribution on that answer set.
 
-We follow the semantics of \cite{staton2016semantics}, where each
-language form has the denotational semantics that a
+We follow the semantics of \cite{staton2016semantics}, this is a
+denotational semantics where each language form is associated with a
 measurable function, and an operational semantics of a sampler.
 
 \subsection{Probabilistic Programming}
@@ -251,9 +252,9 @@ posing and efficiently solving probabilistic modelling problems. At
 their core, all have a way to \texttt{sample} and \texttt{observe}
 data under a probability distribution or Markov kernel.
 
-There are many ways to inference algorithms for probabilistic
-programming languages, but methods based on likelihood-weighting and
-Sequential Monte Carlo algorithms are the simplest to implement.
+There are many inference algorithms for probabilistic programming
+languages, but methods based on likelihood-weighting and Sequential
+Monte Carlo algorithms are the simplest to implement.
 
 \subsection{Sequential Monte Carlo}
 
@@ -287,7 +288,7 @@ Thanks to the recurrence relation:
 p(x_{0:t} \mid y_{0:t}) = p(x_{0:t-1} \mid y_{0:t-1}) \frac{f_t(x_t \mid x_{t-1}) g_t(y_t \mid x_t)}{p(y_t \mid y_{0:t-1})}
 \end{equation}
 
-We know in $T$ rounds we compute the desired distribution as follows:
+we know in $T$ rounds we compute the desired distribution as follows:
 
 Initialise with:
 
@@ -379,9 +380,9 @@ all particles across all streams.
 
 This extension does not modify the search and streams are managed
 exactly as in \textsc{microKanren}. An additional advantage, due to
-the completeness of the \text{microKanren} search being complete, is
-that we are guaranteed to recover the true posterior as all paths of
-the search space will eventually be explored given enough particles.
+the \text{microKanren} search being complete, we are guaranteed to
+recover the true posterior as all paths of the search space will
+eventually be explored given enough particles.
 
 \section{Experiments}
 
@@ -409,7 +410,7 @@ match up with the discrete distribution returned from ProbLog.
 
 \section{Conclusions}
 
-We made a simple to implement extension to \textsc{microKanren} that
+We made a simple-to-implement extension to \textsc{microKanren} that
 lets us support probabilistic inference on both discrete and
 continuous distributions. The approach does not require modifying the
 underlying search algorithm or touching any of the backtracking code and
