@@ -14,6 +14,13 @@
    ((normal 0 1 q))
    ((normal 7 1 q))))
 
+(define (normal-mixture2 q)
+  (fresh (x)
+   (conde
+    ((== x 0))
+    ((== x 7)))
+   (normal x 1 q)))
+
 (define (normal-cond theta)
   (fresh ()
     (normal 0 1 theta)
