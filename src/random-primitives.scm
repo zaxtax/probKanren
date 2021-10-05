@@ -164,6 +164,7 @@
                [result-next (random-binomial (- trials (apply + results)) p-now-adj)])
           (loop (cdr p-scaled) (cons p-now p-used) (cons result-next results))))))
 
+;; TODO: Replace weights on particles with W_n/N
 (define (resampling-draws counts particles)
   (cond
    [(null? counts) '()]

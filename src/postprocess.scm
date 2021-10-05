@@ -48,4 +48,4 @@
   (cond
    [(null? tbl) (cons x tbl)]
    [(equal? (caar tbl) (car x)) (cons (cons (car x) (+ (cdr x) (cdar tbl))) (cdr tbl))]
-   [else (cons (car tbl) (update-tbl x (cdr tbl)))]))
+   [else (cons (car tbl) (update-tbl-p x (cdr tbl)))]))
