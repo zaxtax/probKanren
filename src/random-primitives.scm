@@ -90,7 +90,7 @@
   (if (<= (random 1.0) p) 1.0 0.0))
 
 (define (logp-bernoulli p b)
-  (check-p p "(logp-bernoulli p)")
+  ;(check-p p "(logp-bernoulli p)")
   (if (= b 1) (log p) (log (- 1 p))))
 
 (define random-normal
