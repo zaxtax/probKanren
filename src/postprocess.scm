@@ -15,7 +15,11 @@
   (map (lambda (s) (printf "~f\t~s\n" (cdr s) (car s)))
        samples))
 
+(define (normalize samples)
+  (let ((total (apply + (map cdr samples))))
+    (map (lambda (x) (cons (car x) (/ (cdr x) total))) samples)))
 
+;; Count methods that don't use weights
 
 (define (count samples)
   (count-with-tbl samples '()))
@@ -33,7 +37,7 @@
    [else (cons (car tbl) (update-tbl x (cdr tbl)))]))
 
 
-
+;; Count methods that take weights into account
 
 (define (count-with-p samples)
   (count-with-tbl-p samples '()))
