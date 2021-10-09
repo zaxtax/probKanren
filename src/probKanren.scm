@@ -159,4 +159,12 @@
 		    (let ((bs (random-bernoulli p-g)))
 		      `(,(ext-s b bs s) .
 			,(get-l s/l)))))
-	      (error "bern" "parameter is not ground")))))))
+	      (let ((p-g (random-uniform 0 1)))
+		(let ((s (ext-s p p-g s)))
+		  (if (ground? b s)
+		      `(,s .
+			,(+ (logp-bernoulli p-g (walk b s))
+			    (get-l s/l)))
+		      (let ((bs (random-bernoulli p-g)))
+			`(,(ext-s b bs s) .
+			  ,(get-l s/l))))))))))))
