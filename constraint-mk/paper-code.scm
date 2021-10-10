@@ -4,9 +4,10 @@
 	       ht)
 	     (make-eqv-hashtable) assocs))
 
-(define (hash-update S k v)
-  (let ((S (hashtable-copy S #t)))
-    (hashtable-set! S k v)
+(define (hash-update S k f)
+  (let ((S (hashtable-copy S #t))
+	(g (gensym)))
+    (hashtable-update! S k f g)
     S))
   
 (define (hash-ref S k)
@@ -33,7 +34,7 @@
        (let ((cid (hash-ref S 'cid)) ...)
 	 (cond
           ((valid-== (hash-ref S '==))
-           => (λ (s) (or (p s) ...)))
+           => (lambda (s) (or (p s) ...)))
           (else #t)))))))
 
 ;; (define-syntax (make-constraint-system stx)
@@ -64,8 +65,8 @@
 
 
 (define (valid-== ==) 
-  (foldr
-    (λ (pr s) 
+  (fold-right
+    (lambda (pr s) 
       (and s (unify (car pr) (cdr pr) s)))
     '()
     ==))
@@ -135,14 +136,14 @@
 (define ($append $1 $2)
   (cond
     ((null? $1) $2)
-    ((promise? $1) (delay/name ($append $2 (force $1))))
+    ((procedure? $1) (lambda () ($append $2 ($1))))
     (else (cons (car $1) ($append (cdr $1) $2)))))
 
 #| Goal ⟶ Stream ⟶ Stream |#
 (define ($append-map g $)
   (cond
-    ((null? $) `())
-    ((promise? $) (delay/name ($append-map g (force $))))
+    ((null? $) '())
+    ((procedure? $) (lambda () ($append-map g ($))))
     (else ($append (g (car $)) ($append-map g (cdr $))))))
 
 #| Goal ⟶ Goal ⟶ Goal |#
@@ -156,7 +157,7 @@
     ($append-map g2 (g1 S/c))))
 
 #| Stream ⟶ Mature Stream |#
-(define (pull $) (if (promise? $) (pull (force $)) $))
+(define (pull $) (if (procedure? $) (pull ($)) $))
 
 #| Maybe Nat⁺ ⨯ Mature ⟶ List State |#
 (define (take n $)
@@ -177,7 +178,7 @@
        (lambda (S/c)
 	 (delay/name (g S/c)))))))
 
-(make-constraint-system invalid? S0 == 
+(make-constraint-system invalid? S0 ==
   (=/= absento symbolo not-pairo booleano listo)
   (lambda (s)
     (ormap
