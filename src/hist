@@ -49,7 +49,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 @click.option('--width', default=50, help='Max width for histogram.')
 def hist(discrete, weights, bins, width):
     if weights:
-       d = np.array([list(map(np.float, x.split()))
+       d = np.array([list(map(np.float64, x.split()))
                      for x in sys.stdin.readlines()])
        w = d[:, 0]
        data = d[:, 1] 
