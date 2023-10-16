@@ -26,6 +26,17 @@
     (normal 0 1 theta)
     (normal theta 1 4)))
 
-(define samples (run-with-p 10000 (q) (normal-mixture q)))
+(define (normal-cond2 theta)
+  (fresh ()
+    (== theta 0.5)
+    (normal theta 1 4)
+    (normal 0 1 theta)))
+
+(define samples
+  (run-with-p 100 (q)
+     (normal-mixture2 q)))
+
+;(define samples
+;  (run-with-p 10 (q) (fresh (p) (conj (uniform 0.8 1 p) (bern p q)))))
 
 (output-for-histogram samples)

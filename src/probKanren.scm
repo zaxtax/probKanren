@@ -89,6 +89,7 @@
     (mplus ((car gs) (car ss))
 	   (msum (cdr gs) (cdr ss)))]))
 
+;; 
 (define (disj . gs)
   (lambda (s/c)
     (let* ((s (get-s s/c))
@@ -145,26 +146,30 @@
 			,(get-l s/l)))))
 	      (error "normal" "parameters are not ground")))))))
 
+
+;; The general pattern here is for each argument
+;; 1. walk the argument
+;; 2. check if the ground is ground
+;; 3. update the substitution accordingly
+;; 4. repeat 1-3 for the next argument using the updated substitution
 (define (bern p b)
   (lambda (s/c)
     (per-particle s/c
       (lambda (s/l)
-        (let ((s (get-s s/l)))		    
-	  (if (ground? p s)
-	      (let ((p-g (walk p s)))
-		(if (ground? b s)
-		    `(,s .
-		      ,(+ (logp-bernoulli p-g (walk b s))
-			  (get-l s/l)))
-		    (let ((bs (random-bernoulli p-g)))
-		      `(,(ext-s b bs s) .
-			,(get-l s/l)))))
-	      (let ((p-g (random-uniform 0 1)))
-		(let ((s (ext-s p p-g s)))
+        (let ((s (get-s s/l))
+	      (l (get-l s/l)))
+	  (let ((p (walk p s))
+		(b (walk b s)))
+	    (let ((p/s (if (ground? p s)
+			   (cons p s)
+			   (let ((ps (random-uniform 0 1)))
+			     (cons ps
+				   (ext-s p ps s))))))
+	      (let ((p (car p/s))
+		    (s (cdr p/s)))
+		(let ((b (walk b s)))
 		  (if (ground? b s)
-		      `(,s .
-			,(+ (logp-bernoulli p-g (walk b s))
-			    (get-l s/l)))
-		      (let ((bs (random-bernoulli p-g)))
-			`(,(ext-s b bs s) .
-			  ,(get-l s/l))))))))))))
+		      (cons s
+			    (+ (logp-bernoulli p b) l))
+		      (let ((bs (random-bernoulli p)))
+			(cons (ext-s b bs s) l))))))))))))

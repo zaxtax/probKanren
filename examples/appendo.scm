@@ -8,13 +8,14 @@
   (conde
     ((== '() l) (== s out))
     ((fresh (a d res)
+       (bern 3.0 1.0)
        (== `(,a . ,d) l)
        (== `(,a . ,res) out)
        (appendo d s res)))))
 
-(define samples (run 1024 (q)
+(define samples (run-with-p 1024 (q)
 		  (fresh (x y)
-		    (== `(,x ,y) q)
-		    (appendo x y '(1 2 3 4 5)))))
+		     (== `(,x ,y) q)
+		     (appendo x y '(1 2 3 4 5)))))
 
-(define c (count samples))
+(define c (count-with-p samples))
