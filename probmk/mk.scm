@@ -630,7 +630,6 @@
 		     (subst-with-logprob S (+ (logp-normal mu-v sd-v x-v) l))
 		     (state-C st))
 		    (let ((x-v (random-normal mu-v sd-v)))
-		      (display (list x x-v))
 		      (let ((S (subst-add S x x-v)))
 			(state
 			 (subst-with-logprob S l)
