@@ -181,10 +181,6 @@
 (define (state-with-C st C^)
   (state (state-S st) C^))
 
-(define subst-with-logprob
-  (lambda (S new-logprob)
-    (subst S new-logprob)))
-
 ; Particles
 (define (per-particle particles f)
   (let ((s (remq #f (map f particles))))
@@ -228,7 +224,7 @@
   (let rec ((u u))
     (if (var? u)
       (let ((val (subst-lookup u S)))
-        (if (unbound? val)
+	(if (unbound? val)
           u
           (rec val)))
       u)))
@@ -572,8 +568,8 @@
   (lambda (st)
     (per-particle st
       (lambda (st)
-        (let ((S (state-S st))
-	      (l (subst-logprob S)))
+        (let* ((S (state-S st))
+	       (l (subst-logprob S)))
 	  (let ((pv (walk* p S))
 		(bv (walk* b S)))
 	    (let ((p/s (if (number? pv)
@@ -586,12 +582,12 @@
 		(let ((bv (walk* b S)))
 		  (if (number? bv)
 		      (state
-		       (subst-with-logprob S (+ (logp-bernoulli p b) l))
+		       (subst (subst-map S) (+ (logp-bernoulli p b) l))
 		       (state-C st))
 		      (let ((bv (random-bernoulli p)))
 			(let ((S (subst-add S b bv)))
 			  (state
-			   (subst-with-logprob S l)
+			   (subst (subst-map S) l)
 			   (state-C st))))))))))))))
 
 (define (uniform lo hi x)
@@ -606,12 +602,12 @@
 	    (if (and (number? lo-v) (number? hi-v))
 		(if (number? x-v)
 		    (state
-		     (subst-with-logprob S (+ (logp-uniform lo-v hi-v x-v) l))
+		     (subst (subst-map S) (+ (logp-uniform lo-v hi-v x-v) l))
 		     (state-C st))
 		    (let ((x-v (random-uniform lo-v hi-v)))
 		      (let ((S (subst-add S x x-v)))
 			(state
-			 (subst-with-logprob S l)
+			 (subst (subst-map S) l)
 			 (state-C st)))))
 		(error "uniform" "parameters are not ground"))))))))
 
@@ -627,12 +623,12 @@
 	    (if (and (number? mu-v) (number? sd-v))
 		(if (number? x-v)
 		    (state
-		     (subst-with-logprob S (+ (logp-normal mu-v sd-v x-v) l))
+		     (subst (subst-map S) (+ (logp-normal mu-v sd-v x-v) l))
 		     (state-C st))
 		    (let ((x-v (random-normal mu-v sd-v)))
 		      (let ((S (subst-add S x x-v)))
 			(state
-			 (subst-with-logprob S l)
+			 (subst (subst-map S) l)
 			 (state-C st)))))
 		(error "normal" "parameters are not ground"))))))))
 
