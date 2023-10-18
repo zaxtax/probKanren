@@ -1,25 +1,10 @@
 (define always-wrap-reified? (make-parameter #f))
 
-; Scope object.
-; Used to determine whether a branch has occured between variable
-; creation and unification to allow the set-var-val! optimization
-; in subst-add. Both variables and substitutions will contain a
-; scope. When a substitution flows through a conde it is assigned
-; a new scope.
-
-; Creates a new scope that is not scope-eq? to any other scope
-(define (new-scope) (list 'scope))
-(define scope-eq? equal?)
-
-; Scope used when variable bindings should always be made in the
-; substitution, as in disequality solving and reification. We
-; don't want to set-var-val! a variable when checking if a
-; disequality constraint holds!
-(define nonlocal-scope (list 'non-local-scope))
-
 ;; Global variables for controlling particle population
 (define *total-active-particles* 0)
 (define *max-particles* 10000)
+
+(define (concat l) (apply append l))
 
 (define (split-at l k)
   (define (split-at-aux l k acc)
@@ -43,7 +28,6 @@
 ;   val - value for variable assigned by unification using
 ;      set-var-val! optimization. unbound if not yet set or
 ;      stored in substitution.
-;   scope - scope that the variable was created in.
 ;   idx - unique numeric index for the variable. Used by the
 ;      trie substitution representation.
 ; Variable objects are compared by object identity.
@@ -57,9 +41,9 @@
 
 (define var
   (let ((counter -1))
-    (lambda (scope)
+    (lambda ()
       (set! counter (+ 1 counter))
-      (vector unbound scope counter))))
+      (vector unbound counter))))
 
 ; Vectors are not allowed as terms, so terms that are vectors
 ; are variables.
@@ -68,8 +52,7 @@
 (define var-eq? eq?)
 
 (define (var-val x)   (vector-ref x 0))
-(define (var-scope x) (vector-ref x 1))
-(define (var-idx x)   (vector-ref x 2))
+(define (var-idx x)   (vector-ref x 1))
 
 (define (set-var-val! x v)
   (vector-set! x 0 v))
@@ -93,30 +76,26 @@
 (define (subst-map-add S var val)
   (intmap-set S (var-idx var) val))
 
-(define (subst mapping scope logprob)
-  (list mapping scope logprob))
+(define (subst mapping logprob)
+  (list mapping logprob))
 
 (define subst-map car)
-(define subst-scope cadr)
-(define subst-logprob caddr)
+(define subst-logprob cadr)
 
 (define (subst-length S)
   (subst-map-length (subst-map S)))
 
-(define (subst-with-scope S new-scope)
-  (subst (subst-map S) new-scope (subst-logprob S)))
-
-(define empty-subst (subst empty-subst-map (new-scope) 0))
+(define empty-subst (subst empty-subst-map 0))
 
 (define (subst-add S x v)
   ; set-var-val! optimization: set the value directly on the
   ; variable object if we haven't branched since its creation
   ; (the scope of the variable and the substitution are the same).
   ; Otherwise extend the substitution mapping.
-  (if (scope-eq? (var-scope x) (subst-scope S))
-    (begin (set-var-val! x v)
-           S)
-    (subst (subst-map-add (subst-map S) x v) (subst-scope S) (subst-logprob S))))
+  ;; (if (scope-eq? (var-scope x) (subst-scope S))
+  ;;   (begin (set-var-val! x v)
+  ;;          S)
+  (subst (subst-map-add (subst-map S) x v) (subst-logprob S)))
 
 (define (subst-lookup x S)
   ; set-var-val! optimization.
@@ -202,13 +181,9 @@
 (define (state-with-C st C^)
   (state (state-S st) C^))
 
-(define state-with-scope
-  (lambda (st new-scope)
-    (state (subst-with-scope (state-S st) new-scope) (state-C st))))
-
 (define subst-with-logprob
   (lambda (S new-logprob)
-    (subst S (subst-scope S) new-logprob)))
+    (subst S new-logprob)))
 
 ; Particles
 (define (per-particle particles f)
@@ -330,11 +305,9 @@
 ; (disj gs:[Goal]) -> Goal
 (define (disj . gs)
   (lambda (st)
-    (let* ((s (state-S st))
-	   (c (state-C st))
-	   (n (ceiling (/ (length s) (length gs))))
-	   (chunks (split-into s n)))
-      (mplus* gs (map (lambda (x) (cons x c)) chunks)))))
+    (let* ((n (ceiling (/ (length st) (length gs))))
+	   (chunks (split-into st n)))
+      (mplus* gs chunks))))
 
 ; Int, SuspendedStream -> (ListOf SearchResult)
 (define (take n f)
@@ -380,8 +353,7 @@
     ((_ (x ...) g0 g ...)
      (lambda (st)
        (suspend
-       ;(let ((scope (subst-scope (state-S st))))
-	(let ((x (var (new-scope))) ...)
+	(let ((x (var)) ...)
           (bind* (g0 st) g ...)))))))
 
 ; (_conde [g:Goal ...] ...+) -> Goal
@@ -390,7 +362,6 @@
     ((_ (g0 g ...) (g1 g^ ...) ...)
      (lambda (st)
        (suspend
-         ;(let ((st (state-with-scope st (new-scope))))
            (mplus*
              (bind* (g0 st) g ...)
              (bind* (g1 st) g^ ...) ...))))))
@@ -404,16 +375,14 @@
 (define-syntax run
   (syntax-rules ()
     ((_ n (q) g0 g ...)
-     (map car (car (take n
+     (concat
+      (take n
            (suspend
             ((fresh (q) g0 g ...
                     (lambda (st)
-		      (per-particle st
-		       (lambda (st)
-			 (let ((st (state-with-scope st nonlocal-scope)))
-                           (let ((z ((reify q) st)))
-                             (cons z (lambda () (lambda () #f)))))))))
-              (empty-state n)))))))
+                      (let ((z ((reify q) st)))
+                        (cons z (lambda () (lambda () #f))))))
+              (empty-state n))))))
     ((_ n (q0 q1 q ...) g0 g ...)
      (run n (x)
        (fresh (q0 q1 q ...)
@@ -502,9 +471,7 @@
   (lambda (st)
     (per-particle st
       (lambda (st)
-	(let-values (((S added) (unify* S+ (subst-with-scope
-                                            (state-S st)
-                                            nonlocal-scope))))
+	(let-values (((S added) (unify* S+ st)))
 	  (cond
            ((not S) st)
            ((null? added) #f)
@@ -663,6 +630,7 @@
 		     (subst-with-logprob S (+ (logp-normal mu-v sd-v x-v) l))
 		     (state-C st))
 		    (let ((x-v (random-normal mu-v sd-v)))
+		      (display (list x x-v))
 		      (let ((S (subst-add S x x-v)))
 			(state
 			 (subst-with-logprob S l)
@@ -679,17 +647,19 @@
 
 (define (reify x)
   (lambda (st)
-    (let* ((S (state-S st))
-           (v (walk* x S))
-           (R (reify-S v (subst empty-subst-map nonlocal-scope 0)))
-           (relevant-vars (vars v)))
-      (let*-values (((T D A) (extract-and-normalize st relevant-vars x))
-		    ((D A)   (drop-irrelevant D A relevant-vars))
-		    ((D A)   (drop-subsumed D A st)))
-        (form (walk* v R)
-	      (walk* D R)
-	      (walk* T R)
-	      (walk* A R))))))
+    (per-particle st
+     (lambda (st)
+       (let* ((S (state-S st))
+              (v (walk* x S))
+              (R (reify-S v (subst empty-subst-map 0)))
+              (relevant-vars (vars v)))
+	 (let*-values (((T D A) (extract-and-normalize st relevant-vars x))
+		       ((D A)   (drop-irrelevant D A relevant-vars))
+		       ((D A)   (drop-subsumed D A st)))
+           (form (walk* v R)
+		 (walk* D R)
+		 (walk* T R)
+		 (walk* A R))))))))
 
 (define (vars term)
   (let rec ((term term) (acc '()))
@@ -834,7 +804,7 @@
 ;  * ((a . 5) (b . 6)) is subsumed by ((a . 5)) because (not (== a 5)) is a stronger constraint
 ;    than (not (and (== a 5) (== b 6)))
 (define (d-subsumed-by? d1 d2)
-  (let*-values (((S ignore) (unify* d1 (subst empty-subst-map nonlocal-scope 0)))
+  (let*-values (((S ignore) (unify* d1 (subst empty-subst-map 0)))
                 ((S+ added) (unify* d2 S)))
                (and S+ (null? added))))
 
