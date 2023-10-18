@@ -471,7 +471,7 @@
   (lambda (st)
     (per-particle st
       (lambda (st)
-	(let-values (((S added) (unify* S+ st)))
+	(let-values (((S added) (unify* S+ (state-S st))))
 	  (cond
            ((not S) st)
            ((null? added) #f)
