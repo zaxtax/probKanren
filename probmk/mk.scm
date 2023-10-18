@@ -368,7 +368,7 @@
     ((_ (g0 g ...) ...)
      (disj (bind* g0 g ...) ...))))
 
-(define-syntax run
+(define-syntax run-with-p
   (syntax-rules ()
     ((_ n (q) g0 g ...)
      (concat
@@ -384,6 +384,10 @@
        (fresh (q0 q1 q ...)
          g0 g ...
          (== (list q0 q1 q ...) x))))))
+
+(define-syntax run
+  (syntax-rules ()
+    ((_ n (q0 ...) g0 ...) (map car (run-with-p n (q0 ...) g0 ...)))))
 
 (define-syntax run*
   (syntax-rules ()
@@ -651,10 +655,12 @@
 	 (let*-values (((T D A) (extract-and-normalize st relevant-vars x))
 		       ((D A)   (drop-irrelevant D A relevant-vars))
 		       ((D A)   (drop-subsumed D A st)))
-           (form (walk* v R)
-		 (walk* D R)
-		 (walk* T R)
-		 (walk* A R))))))))
+           (cons
+	     (form (walk* v R)
+		   (walk* D R)
+		   (walk* T R)
+		   (walk* A R))
+	     (exp (subst-logprob S)))))))))
 
 (define (vars term)
   (let rec ((term term) (acc '()))
