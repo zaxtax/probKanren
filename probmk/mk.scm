@@ -189,6 +189,10 @@
 	#f
 	s)))
 
+(define (precur f)
+  (lambda (st)
+    (car (f (unit st)))))
+
 ; Unification
 
 ; UnificationResult: (or/c (values Substitution (Listof Association))
@@ -499,12 +503,12 @@
       (lambda (st)
 	(let ((term1 (walk term1 (state-S st)))
               (term2 (walk term2 (state-S st))))
-	  (let ((st^ (car ((=/= term1 term2) (unit st)))))
+	  (let ((st^ ((precur (=/= term1 term2)) st)))
             (and st^
 		 (cond
 		  ((pair? term2)
-                   (let ((st^^ (car ((absento term1 (car term2)) (unit st^)))))
-                     (and st^^ (car ((absento term1 (cdr term2)) (unit st^^))))))
+                   (let ((st^^ ((precur (absento term1 (car term2))) st^)))
+                     (and st^^ ((precur (absento term1 (cdr term2))) st^^))))
 		  ((var? term2)
                    (let* ((c (lookup-c st^ term2))
 			  (A (c-A c)))
