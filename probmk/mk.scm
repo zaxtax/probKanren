@@ -5,6 +5,7 @@
 (define *max-particles* 10000)
 
 (define (concat l) (apply append l))
+(define (unit x) (cons x '()))
 
 (define (split-at l k)
   (define (split-at-aux l k acc)
@@ -209,7 +210,7 @@
       ((var? v) (ext-s-check v u s))
       ((and (pair? u) (pair? v))
        (let-values (((s added-car) (unify (car u) (car v) s)))
-         (if s
+	 (if s
            (let-values (((s added-cdr) (unify (cdr u) (cdr v) s)))
              ; Right now appends the list of added values from sub-unifications.
              ; Alternatively could be threaded monadically, which could be faster
@@ -498,12 +499,12 @@
       (lambda (st)
 	(let ((term1 (walk term1 (state-S st)))
               (term2 (walk term2 (state-S st))))
-	  (let ((st^ ((=/= term1 term2) st)))
+	  (let ((st^ (car ((=/= term1 term2) (unit st)))))
             (and st^
 		 (cond
 		  ((pair? term2)
-                   (let ((st^^ ((absento term1 (car term2)) st^)))
-                     (and st^^ ((absento term1 (cdr term2)) st^^))))
+                   (let ((st^^ (car ((absento term1 (car term2)) (unit st^)))))
+                     (and st^^ (car ((absento term1 (cdr term2)) (unit st^^))))))
 		  ((var? term2)
                    (let* ((c (lookup-c st^ term2))
 			  (A (c-A c)))
