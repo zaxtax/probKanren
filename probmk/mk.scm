@@ -327,6 +327,12 @@
     ((_ e) e)
     ((_ e g0 g ...) (bind* (bind e g0) g ...))))
 
+; (conj+ gs:[Goal] e:SearchStream) -> SearchStream
+(define (conj+ gs e)
+  (if (null? gs)
+      e
+      (conj+ (cdr gs) (bind e (car gs)))))
+
 ; (suspend e:SearchStream) -> SuspendedStream
 ; Used to clearly mark the locations where search is suspended in order to
 ; interleave with other branches.
@@ -335,11 +341,12 @@
 ; (mplus* gs:[Goal] ss:[State]) -> SearchStream
 (define (mplus* gs ss)
   (cond
-   [(null? gs) '()]
-   [(null? ss) '()]
+   [(null? gs) #f]
+   [(null? ss) #f]
    [else
-    (mplus ((car gs) (car ss))
-	   (suspend (mplus* (cdr gs) (cdr ss))))]))
+    (let ((g (car gs)))
+      (mplus (conj+ (cdr g) ((car g) (car ss)))
+	     (suspend (mplus* (cdr gs) (cdr ss)))))]))
 
 ; (_mplus* e:SearchStream ...+) -> SearchStream
 (define-syntax _mplus*
@@ -363,7 +370,7 @@
     ((_ (g0 g ...) (g1 g^ ...) ...)
      (lambda (st)
        (suspend
-           (mplus*
+           (_mplus*
              (bind* (g0 st) g ...)
              (bind* (g1 st) g^ ...) ...))))))
 
@@ -371,7 +378,7 @@
 (define-syntax conde
   (syntax-rules ()
     ((_ (g0 g ...) ...)
-     (disj (bind* g0 g ...) ...))))
+     (disj (list g0 g ...) ...))))
 
 (define-syntax run-with-p
   (syntax-rules ()
