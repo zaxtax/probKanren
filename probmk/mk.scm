@@ -191,7 +191,8 @@
 
 (define (precur f)
   (lambda (st)
-    (car (f (unit st)))))
+    (let ((res (f (unit st))))
+      (and res (car res)))))
 
 ; Unification
 
@@ -553,10 +554,10 @@
        (and-foldl (lambda (op st) (op st)) st
         (append
           (if (c-T old-c)
-            (list ((apply-type-constraint (c-T old-c)) (rhs a)))
+            (list (precur ((apply-type-constraint (c-T old-c)) (rhs a))))
             '())
-          (map (lambda (atom) (absento atom (rhs a))) (c-A old-c))
-          (map =/=* (c-D old-c))))))))
+          (map (lambda (atom) (precur (absento atom (rhs a)))) (c-A old-c))
+          (map (lambda (atom) (precur (=/=* atom))) (c-D old-c))))))))
 
 (define (walk* v S)
   (let ((v (walk v S)))
