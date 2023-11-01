@@ -393,7 +393,7 @@
                         (cons z (lambda () (lambda () #f))))))
               (empty-state n))))))
     ((_ n (q0 q1 q ...) g0 g ...)
-     (run n (x)
+     (run-with-p n (x)
        (fresh (q0 q1 q ...)
          g0 g ...
          (== (list q0 q1 q ...) x))))))
