@@ -360,7 +360,7 @@
   (syntax-rules ()
     ((_ e) e)
     ((_ e0 e ...)
-     (mplus e0 (suspend (mplus* e ...))))))
+     (mplus e0 (suspend (_mplus* e ...))))))
 
 ; (fresh (x:id ...) g:Goal ...+) -> Goal
 (define-syntax fresh
