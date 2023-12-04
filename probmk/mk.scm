@@ -178,7 +178,7 @@
 
 (define (empty-state n)
   (if n
-      (make-list 1 (state empty-subst empty-C))
+      (make-list n (state empty-subst empty-C))
       (make-list 1 (state empty-subst empty-C))))
 
 (define (state-with-C st C^)
@@ -420,6 +420,41 @@
 (define-syntax run*
   (syntax-rules ()
     ((_ (q0 q ...) g0 g ...) (run #f (q0 q ...) g0 g ...))))
+
+;; These runs are for debugging
+
+(define-syntax _run-with-logp
+  (syntax-rules ()
+    ((_ n (q) g0 g ...)
+     (concat
+      (take n
+           (suspend
+            ((fresh (q) g0 g ...
+                    (lambda (st)
+                      (let ((z ((reify q) st)))
+                        (cons z (lambda () (lambda () #f))))))
+              (empty-state 1))))))
+    ((_ n (q0 q1 q ...) g0 g ...)
+     (_run-with-logp n (x)
+       (fresh (q0 q1 q ...)
+         g0 g ...
+         (== (list q0 q1 q ...) x))))))
+
+(define-syntax _run-with-p
+  (syntax-rules ()
+    ((_ n (q0 ...) g0 ...)
+     (map
+      (lambda (st) (cons (car st) (exp (cdr st))))
+      (_run-with-logp n (q0 ...) g0 ...)))))
+
+(define-syntax _run
+  (syntax-rules ()
+    ((_ n (q0 ...) g0 ...) (map car (_run-with-logp n (q0 ...) g0 ...)))))
+
+(define-syntax _run*
+  (syntax-rules ()
+    ((_ (q0 q ...) g0 g ...) (_run #f (q0 q ...) g0 g ...))))
+
 
 
 ; Constraints

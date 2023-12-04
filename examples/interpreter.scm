@@ -72,32 +72,32 @@
          (lookupo x rest t))))))
 
 (define (tests)
-  (pretty-print (run 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (_run 5 (v) (evalo '(lambda (x) x) v)))
   ;; '((closure x x ()))
 
-  (pretty-print (run-with-p 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (_run-with-p 5 (v) (evalo '(lambda (x) x) v)))
   ;; (((closure x x ()) . 0.10000000000000002))
 
-  (pretty-print (run 5 (v) (evalo ''1 v)))
+  (pretty-print (_run 5 (v) (evalo ''1 v)))
   ;; (1)
 
-  (pretty-print (run 1000 (v) (evalo '(cons '1 '()) v)))
+  (pretty-print (_run 1000 (v) (evalo '(cons '1 '()) v)))
   ;; ((1))
 
   (pretty-print
    (remove-duplicates
-    (run 10 (e)
+    (_run 10 (e)
       (evalo e '(I love)))))
   ;; nice
 
   (pretty-print
    (remove-duplicates
-    (run-with-p 10 (e)
+    (_run-with-p 10 (e)
                 (evalo e '(I love)))))
   ;; nice
 
   (pretty-print
-   (run-with-p 2 (e)
+   (_run-with-p 2 (e)
      (evalo e e)))
   )
 
