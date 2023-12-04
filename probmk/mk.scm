@@ -178,7 +178,7 @@
 
 (define (empty-state n)
   (if n
-      (make-list n (state empty-subst empty-C))
+      (make-list 1 (state empty-subst empty-C))
       (make-list 1 (state empty-subst empty-C))))
 
 (define (state-with-C st C^)

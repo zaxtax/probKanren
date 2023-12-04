@@ -21,26 +21,26 @@
 (define eval-expro
   (lambda (expr env val)
     (_conde
-      ((bern 2 1.0)
+      ((bern 0.15 1.0)
        (symbolo expr) (lookupo expr env val))
-      ((bern 2 1.0)
+      ((bern 0.15 1.0)
        (== `(quote ,val) expr)
        (not-in-envo 'quote env)
        (absento 'closure val))
-      ((bern 2 1.0)
+      ((bern 0.20 1.0)
        (fresh (e1 e2 v1 v2)
          (== `(cons ,e1 ,e2) expr)
          (== (cons v1 v2) val)
          (not-in-envo 'cons env)
          (eval-expro e1 env v1)
          (eval-expro e2 env v2)))
-      ((bern 2 1.0)
+      ((bern 0.20 1.0)
        (fresh (x body)
          (== `(lambda (,x) ,body) expr)
          (symbolo x)
          (== `(closure ,x ,body ,env) val)
          (not-in-envo 'lambda env)))
-      ((bern 2 1.0)
+      ((bern 0.20 1.0)
        (fresh (rator rand x body env^ a)
          (== `(,rator ,rand) expr)
          (eval-expro rator env `(closure ,x ,body ,env^))
@@ -51,9 +51,9 @@
 (define not-in-envo
   (lambda (x env)
     (_conde
-     ((bern 2 1.0)
+     ((bern 0.5 1.0)
       (== '() env))
-     ((bern 2 1.0)
+     ((bern 0.5 1.0)
       (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env)
          (=/= y x)
@@ -62,11 +62,11 @@
 (define lookupo
   (lambda (x env t)
     (_conde
-     ((bern 2 1.0)
+     ((bern 0.5 1.0)
       (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env) (== y x)
          (== v t)))
-     ((bern 2 1.0)
+     ((bern 0.5 1.0)
       (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env) (=/= y x)
          (lookupo x rest t))))))
@@ -86,25 +86,24 @@
 
   (pretty-print
    (remove-duplicates
-    (run 10000 (e)
+    (run 10 (e)
       (evalo e '(I love)))))
   ;; nice
 
   (pretty-print
    (remove-duplicates
-    (run-with-p 10000 (e)
+    (run-with-p 10 (e)
                 (evalo e '(I love)))))
   ;; nice
-)
- #;
-(define ss
-(run 1 (e)
-  (== e '((lambda (_.0)
-            (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))
-          '(lambda (_.0)
-             (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))))
-  (evalo e e))
-)
+
+  (pretty-print
+   (run-with-p 2 (e)
+     (== e '((lambda (_.0)
+               (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))
+             '(lambda (_.0)
+                (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))))
+     (evalo e e)))
+  )
 
 (tests)
 
