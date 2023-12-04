@@ -98,10 +98,6 @@
 
   (pretty-print
    (run-with-p 2 (e)
-     (== e '((lambda (_.0)
-               (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))
-             '(lambda (_.0)
-                (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))))
      (evalo e e)))
   )
 
