@@ -381,7 +381,7 @@
     ((_ (g0 g ...) ...)
      (disj (list g0 g ...) ...))))
 
-(define-syntax run-with-p
+(define-syntax run-with-logp
   (syntax-rules ()
     ((_ n (q) g0 g ...)
      (concat
@@ -398,9 +398,16 @@
          g0 g ...
          (== (list q0 q1 q ...) x))))))
 
+(define-syntax run-with-p
+  (syntax-rules ()
+    ((_ n (q0 ...) g0 ...)
+     (map
+      (lambda (st) (cons (car st) (exp (cdr st))))
+      (run-with-logp n (q0 ...) g0 ...)))))
+
 (define-syntax run
   (syntax-rules ()
-    ((_ n (q0 ...) g0 ...) (map car (run-with-p n (q0 ...) g0 ...)))))
+    ((_ n (q0 ...) g0 ...) (map car (run-with-logp n (q0 ...) g0 ...)))))
 
 (define-syntax run*
   (syntax-rules ()
@@ -673,7 +680,7 @@
 		   (walk* D R)
 		   (walk* T R)
 		   (walk* A R))
-	     (exp (subst-logprob S)))))))))
+	     (subst-logprob S))))))))
 
 (define (vars term)
   (let rec ((term term) (acc '()))
