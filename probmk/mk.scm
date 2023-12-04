@@ -177,7 +177,9 @@
 (define (state-C st) (cdr st))
 
 (define (empty-state n)
-  (make-list n (state empty-subst empty-C)))
+  (if n
+      (make-list n (state empty-subst empty-C))
+      (make-list 1 (state empty-subst empty-C))))
 
 (define (state-with-C st C^)
   (state (state-S st) C^))
@@ -187,7 +189,7 @@
   (let ((s (remq #f (map f particles))))
     (if (null? s)
 	#f
-	(resample-systematic s (length particles)))))
+	s))) ;; (resample-systematic s (length particles)))))
 
 (define (per-particle-reify particles f)
   (let ((s (remq #f (map f particles))))

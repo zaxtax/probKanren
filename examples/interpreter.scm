@@ -20,27 +20,27 @@
 
 (define eval-expro
   (lambda (expr env val)
-    (conde
-      ((bern 0.25 1.0)
+    (_conde
+      ((bern 2 1.0)
        (symbolo expr) (lookupo expr env val))
-      ((bern 0.25 1.0)
+      ((bern 2 1.0)
        (== `(quote ,val) expr)
        (not-in-envo 'quote env)
        (absento 'closure val))
-      ((bern 0.15 1.0)
+      ((bern 2 1.0)
        (fresh (e1 e2 v1 v2)
          (== `(cons ,e1 ,e2) expr)
          (== (cons v1 v2) val)
          (not-in-envo 'cons env)
          (eval-expro e1 env v1)
          (eval-expro e2 env v2)))
-      ((bern 0.10 1.0)
+      ((bern 2 1.0)
        (fresh (x body)
          (== `(lambda (,x) ,body) expr)
          (symbolo x)
          (== `(closure ,x ,body ,env) val)
          (not-in-envo 'lambda env)))
-      ((bern 0.25 1.0)
+      ((bern 2 1.0)
        (fresh (rator rand x body env^ a)
          (== `(,rator ,rand) expr)
          (eval-expro rator env `(closure ,x ,body ,env^))
@@ -50,20 +50,24 @@
 
 (define not-in-envo
   (lambda (x env)
-    (conde
-      ((== '() env))
-      ((fresh (y v rest)
+    (_conde
+     ((bern 2 1.0)
+      (== '() env))
+     ((bern 2 1.0)
+      (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env)
          (=/= y x)
          (not-in-envo x rest))))))
 
 (define lookupo
   (lambda (x env t)
-    (conde
-      ((fresh (y v rest)
+    (_conde
+     ((bern 2 1.0)
+      (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env) (== y x)
          (== v t)))
-      ((fresh (y v rest)
+     ((bern 2 1.0)
+      (fresh (y v rest)
          (== `((,y . ,v) . ,rest) env) (=/= y x)
          (lookupo x rest t))))))
 
@@ -91,15 +95,16 @@
     (run-with-p 10000 (e)
                 (evalo e '(I love)))))
   ;; nice
-
-  #;
-(run 10000000 (e)
+)
+ #;
+(define ss
+(run 1 (e)
   (== e '((lambda (_.0)
             (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))
           '(lambda (_.0)
              (cons _.0 (cons (cons 'quote (cons _.0 '())) '())))))
   (evalo e e))
-  )
+)
 
 (tests)
 
