@@ -78,7 +78,7 @@
 
 ;; If log-weights are all likely to be small, rescale them to prevent underflow
 (define (rescaled-exp log-weights)
-  (let ((t (max log-weights)))
+  (let ((t (apply max log-weights)))
     (map (lambda (w) (exp (- w t))) log-weights)))
 
 (define (rescaled-exp-normed log-weights)
@@ -164,6 +164,8 @@
                [result-next (random-binomial (- trials (apply + results)) p-now-adj)])
           (loop (cdr p-scaled) (cons p-now p-used) (cons result-next results))))))
 
+(define get-weights cadar)
+
 ;; TODO: Replace weights on particles with W_n/N where W_n = sum(w_i)
 (define (resampling-draws counts particles)
   (cond
@@ -178,7 +180,7 @@
   (case-lambda
    [(particles) (resample-multinomial particles (length particles))]
    [(particles n)
-    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
+    (let ((weights (rescaled-exp (map (lambda (x) (get-weights x)) particles))))
       (let ((counts (random-multinomial n weights)))
 	(resampling-draws counts particles)))]))
 
@@ -187,7 +189,7 @@
    [(particles) (resample-residual particles (length particles))]
    [(particles n)
     (let* ((weights
-	    (rescaled-exp-normed (map (lambda (x) (cdr x)) particles)))
+	    (rescaled-exp-normed (map (lambda (x) (get-weights x)) particles)))
 	   (first-counts
 	     (map (lambda (w) (exact (floor (* w n)))) weights))
 	   (R (fold-left + 0 first-counts)))
@@ -217,7 +219,7 @@
   (case-lambda
    [(particles) (resample-stratified particles (length particles))]
    [(particles n)
-    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
+    (let ((weights (rescaled-exp (map (lambda (x) (get-weights x)) particles))))
       (let ((cweights (cumulative-sum weights))
 	    (l (apply + weights)))
 	(let ((counts (find-stratified-indices cweights l n 0 '() '())))
@@ -240,7 +242,7 @@
   (case-lambda
    [(particles) (resample-systematic particles (length particles))]
    [(particles n)
-    (let ((weights (rescaled-exp (map (lambda (x) (cdr x)) particles))))
+    (let ((weights (rescaled-exp (map (lambda (x) (get-weights x)) particles))))
       (let ((cweights (cumulative-sum weights))
 	    (l (apply + weights)))
 	(let ((counts (find-systematic-indices cweights l (random 1.0) n 0 '() '())))

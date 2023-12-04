@@ -187,6 +187,12 @@
   (let ((s (remq #f (map f particles))))
     (if (null? s)
 	#f
+	(resample-systematic s (length particles)))))
+
+(define (per-particle-reify particles f)
+  (let ((s (remq #f (map f particles))))
+    (if (null? s)
+	#f
 	s)))
 
 (define (precur f)
@@ -666,7 +672,7 @@
 
 (define (reify x)
   (lambda (st)
-    (per-particle st
+    (per-particle-reify st
      (lambda (st)
        (let* ((S (state-S st))
               (v (walk* x S))
