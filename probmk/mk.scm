@@ -191,12 +191,6 @@
 	#f
 	s))) ;; (resample-systematic s (length particles)))))
 
-(define (per-particle-reify particles f)
-  (let ((s (remq #f (map f particles))))
-    (if (null? s)
-	#f
-	s)))
-
 (define (precur f)
   (lambda (st)
     (let ((res (f (unit st))))
@@ -317,7 +311,10 @@
   (lambda (st)
     (let* ((n (ceiling (/ (length st) (length gs))))
 	   (chunks (split-into st n)))
-      (mplus* gs chunks))))
+      (bind
+       (mplus* gs chunks)
+       (lambda (st^)
+	 (resample-systematic st^ (length st^)))))))
 
 ; Int, SuspendedStream -> (ListOf SearchResult)
 (define (take n f)
@@ -382,6 +379,30 @@
            (_mplus*
              (bind* (g0 st) g ...)
              (bind* (g1 st) g^ ...) ...))))))
+
+#;
+;; Sketch to include ways to inspect state before and after conde runs
+(define-syntax conde
+    (syntax-rules ()
+      ((_ (g0 g ...) (g1 g^ ...) ...)
+       (lambda (st)
+         (suspend
+          (let ((g (gensym "g")))
+            ;; if desired, update global hashtable with info from
+            ;; before conde starts running
+            (let ((st (state-with-scope st (new-scope))))
+              (bind
+               (mplus*
+                (bind* (g0 st) g ...)
+                (bind* (g1 st) g^ ...)
+                ...)
+               (lambda (st^)
+                 ;; extract info from st^
+                 ;; update statistics in hashtable
+                 ;; create a new state with the updated particle count
+                 (let ((new-st ...))
+                   ;; return singleton stream of new-state
+                   ))))))))))
 
 ; (conde [g:Goal ...] ...+) -> Goal
 (define-syntax conde
@@ -709,7 +730,7 @@
 
 (define (reify x)
   (lambda (st)
-    (per-particle-reify st
+    (per-particle st
      (lambda (st)
        (let* ((S (state-S st))
               (v (walk* x S))
