@@ -410,6 +410,34 @@
     ((_ (g0 g ...) ...)
      (disj (list g0 g ...) ...))))
 
+(define (mean ls)
+  (exact->inexact
+    (/ (apply + (map exp ls)) (length ls))))
+
+(define (conde-priority gps gss)
+  (lambda (st)
+     (let* ((clause-probs
+             (map (lambda (gp)
+                   (mean
+                     (per-particle (gp st)
+                       (lambda (st^)
+                         (subst-logprob (state-S st^))))))
+                  gps))
+            (weighted-gss (map list clause-probs gps gss)))
+       ((apply disj
+         (map
+           (lambda (x) (cons (cadr x) (caddr x)))
+           (sort (lambda (x y) (< (car y) (car x))) weighted-gss))) st))))
+       
+   
+
+; (conde [g:Goal ...] ...+) -> Goal
+(define-syntax conde-p
+  (syntax-rules ()
+    ((_ (gp g0 g ...) ...)
+     (conde-priority (list gp ...) (list (list g0 g ...) ...)))))
+
+
 (define-syntax run-with-logp
   (syntax-rules ()
     ((_ n (q) g0 g ...)

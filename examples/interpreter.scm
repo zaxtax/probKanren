@@ -20,14 +20,14 @@
 
 (define eval-expro
   (lambda (expr env val)
-    (_conde
+    (conde-p
       ((bern 0.15 1.0)
        (symbolo expr) (lookupo expr env val))
-      ((bern 0.15 1.0)
+      ((bern 0.75 1.0)
        (== `(quote ,val) expr)
        (not-in-envo 'quote env)
        (absento 'closure val))
-      ((bern 0.20 1.0)
+      ((bern 0.92 1.0)
        (fresh (e1 e2 v1 v2)
          (== `(cons ,e1 ,e2) expr)
          (== (cons v1 v2) val)
@@ -72,33 +72,33 @@
          (lookupo x rest t))))))
 
 (define (tests)
-  (pretty-print (_run 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (run 5 (v) (evalo '(lambda (x) x) v)))
   ;; '((closure x x ()))
 
-  (pretty-print (_run-with-p 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (run-with-p 5 (v) (evalo '(lambda (x) x) v)))
   ;; (((closure x x ()) . 0.10000000000000002))
 
-  (pretty-print (_run 5 (v) (evalo ''1 v)))
+  (pretty-print (run 5 (v) (evalo ''1 v)))
   ;; (1)
 
-  (pretty-print (_run 1000 (v) (evalo '(cons '1 '()) v)))
+  (pretty-print (run 100 (v) (evalo '(cons '1 '()) v)))
   ;; ((1))
 
   (pretty-print
    (remove-duplicates
-    (_run 10 (e)
+    (run 10 (e)
       (evalo e '(I love)))))
   ;; nice
 
   (pretty-print
    (remove-duplicates
-    (_run-with-p 10 (e)
+    (run-with-p 100 (e)
                 (evalo e '(I love)))))
   ;; nice
 
-  (pretty-print
-   (_run-with-p 2 (e)
-     (evalo e e)))
+  ;; (pretty-print
+  ;;  (_run-with-p 2 (e)
+  ;;    (evalo e e)))
   )
 
 (tests)
