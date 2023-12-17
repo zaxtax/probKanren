@@ -316,6 +316,14 @@
        (lambda (st^)
 	 (resample-systematic st^ (length st^)))))))
 
+(define (_disj . gs)
+  (lambda (st)
+    (let ((chunks (make-list (length gs) st)))
+      (bind
+       (mplus* gs chunks)
+       (lambda (st^)
+	 (resample-systematic st^ (length st^)))))))
+
 ; Int, SuspendedStream -> (ListOf SearchResult)
 (define (take n f)
   (if (and n (<= n 0))
@@ -414,7 +422,7 @@
   (exact->inexact
     (/ (apply + (map exp ls)) (length ls))))
 
-(define (conde-priority gps gss)
+(define (conde-priority disj gps gss)
   (lambda (st)
      (let* ((clause-probs
              (map (lambda (gp)
@@ -435,7 +443,12 @@
 (define-syntax conde-p
   (syntax-rules ()
     ((_ (gp g0 g ...) ...)
-     (conde-priority (list gp ...) (list (list g0 g ...) ...)))))
+     (conde-priority disj (list gp ...) (list (list g0 g ...) ...)))))
+
+(define-syntax _conde-p
+  (syntax-rules ()
+    ((_ (gp g0 g ...) ...)
+     (conde-priority _disj (list gp ...) (list (list g0 g ...) ...)))))
 
 
 (define-syntax run-with-logp

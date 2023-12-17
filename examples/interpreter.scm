@@ -1,6 +1,7 @@
 (load "../probmk/mk-vicare.scm")
 (load "../probmk/random-primitives.scm")
 (load "../probmk/mk.scm")
+(load "../probmk/postprocess.scm")
 
 (define (delete-duplicates xs)
   (let ((seen (make-hash-table equal?)))
@@ -20,14 +21,24 @@
 
 (define eval-expro
   (lambda (expr env val)
-    (conde-p
+    (_conde-p
       ((bern 0.15 1.0)
        (symbolo expr) (lookupo expr env val))
-      ((bern 0.75 1.0)
+      ((bern 0.5 1.0)
+       (_conde-p
+         ((bern 0.00000001 1.0)
+          (fresh (a d)
+            (== val (cons a d))))
+         ((bern 1.0 1.0)
+          (symbolo val))
+         ((bern 1.0 1.0)
+          (numbero val))
+         ((bern 1.0 1.0)
+          (== val '())))
        (== `(quote ,val) expr)
        (not-in-envo 'quote env)
        (absento 'closure val))
-      ((bern 0.92 1.0)
+      ((bern 1.0 1.0)
        (fresh (e1 e2 v1 v2)
          (== `(cons ,e1 ,e2) expr)
          (== (cons v1 v2) val)
@@ -72,28 +83,29 @@
          (lookupo x rest t))))))
 
 (define (tests)
-  (pretty-print (run 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (_run 5 (v) (evalo '(lambda (x) x) v)))
   ;; '((closure x x ()))
 
-  (pretty-print (run-with-p 5 (v) (evalo '(lambda (x) x) v)))
+  (pretty-print (_run-with-p 5 (v) (evalo '(lambda (x) x) v)))
   ;; (((closure x x ()) . 0.10000000000000002))
 
-  (pretty-print (run 5 (v) (evalo ''1 v)))
+  (pretty-print (_run 5 (v) (evalo ''1 v)))
   ;; (1)
 
-  (pretty-print (run 100 (v) (evalo '(cons '1 '()) v)))
+  (pretty-print (_run 100 (v) (evalo '(cons '1 '()) v)))
   ;; ((1))
 
   (pretty-print
    (remove-duplicates
-    (run 10 (e)
+    (_run 50 (e)
       (evalo e '(I love)))))
   ;; nice
 
   (pretty-print
-   (remove-duplicates
-    (run-with-p 100 (e)
-                (evalo e '(I love)))))
+   (sort (lambda (x y) (> (cdr x) (cdr y)))
+         (count-with-p
+          (_run-with-p 50 (e)
+                       (evalo e '(I love))))))
   ;; nice
 
   ;; (pretty-print
