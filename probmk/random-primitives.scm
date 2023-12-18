@@ -36,6 +36,10 @@
   
 (define pi (* (asin 1) 2))
 
+(define (mean ls)
+  (exact->inexact
+    (/ (apply + (map exp ls)) (length ls))))
+
 (define (repeat n thunk)
   (let loop ([i 0]
              [result '()])
